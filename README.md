@@ -51,6 +51,7 @@ Integration with the backend API for communication and data manipulation.
 ## Back-end
 - Language: [Python](https://www.python.org/)
 - Framework: [FastAPI](https://fastapi.tiangolo.com/)
+- Package Manager: [Pipenv](https://pipenv.pypa.io/)
 - Database: [PostegreSQL](https://www.postgresql.org/)
 
 
