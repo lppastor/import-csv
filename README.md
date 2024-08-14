@@ -56,3 +56,15 @@ Integration with the backend API for communication and data manipulation.
 
 
 
+
+
+# Example:
+
+## Login page
+![WhatsApp Image 2024-08-09 at 11 04 57 (3)](https://github.com/user-attachments/assets/52aa0edb-5b14-44d6-8439-3aea447f31a6)
+
+## System
+  ![WhatsApp Image 2024-08-09 at 11 04 57 (2)](https://github.com/user-attachments/assets/8b22e524-79c4-4b99-bb9d-ebe896f2173c)
+  
+## Graphics
+  ![WhatsApp Image 2024-08-09 at 11 04 57 (1)](https://github.com/user-attachments/assets/4fde5da7-9a61-496e-8350-f39a605c5af4)
