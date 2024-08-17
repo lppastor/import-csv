@@ -68,3 +68,7 @@ Integration with the backend API for communication and data manipulation.
   
 ## Graphics
   ![WhatsApp Image 2024-08-09 at 11 04 57 (1)](https://github.com/user-attachments/assets/4fde5da7-9a61-496e-8350-f39a605c5af4)
+
+## Database 
+![cb65a1ca-37a7-455f-bd64-b84e0d00c71a](https://github.com/user-attachments/assets/0cb9e71d-346d-40c3-9b03-1bf22509e340)
+
