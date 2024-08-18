@@ -39,6 +39,29 @@ Frontend:
 Developed in React.js to provide a dynamic and responsive user interface.
 Integration with the backend API for communication and data manipulation.
 
+## Database model
+
+```mermaid
+erDiagram
+    USER {
+        string ID
+        string other_neneric_data
+    }
+    CSV_IMPORT ||--|{ USER : is-from
+    CSV_IMPORT {
+        string ID
+        string date
+        string user_id_fk
+    }
+
+    CSV_DATA ||--|{ CSV_IMPORT : is-from
+    CSV_DATA {
+        string ID
+        string csv_import_id_fk
+        string other_csv_data
+    }
+```
+
 # Stack
 
 ## Front-end
@@ -53,9 +76,6 @@ Integration with the backend API for communication and data manipulation.
 - Framework: [FastAPI](https://fastapi.tiangolo.com/)
 - Package Manager: [Pipenv](https://pipenv.pypa.io/)
 - Database: [PostegreSQL](https://www.postgresql.org/)
-
-
-
 
 
 # Example:
