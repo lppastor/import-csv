@@ -30,36 +30,37 @@
 
 # Architecture
 
-## Backend:
-
-Developed in Python, using Flask or Django to create a RESTful API.
-PostgreSQL as the database to store user information, transactions, and data imported from CSV files.
-Frontend:
-
-Developed in React.js to provide a dynamic and responsive user interface.
-Integration with the backend API for communication and data manipulation.
-
 ## Database model
 
 ```mermaid
 erDiagram
     USER {
-        string ID
-        string other_neneric_data
+        int user_id PK
+        datetime date_time
+        varchar(40) name
+        varchar(60) email
+        varbinary(255) password
     }
-    CSV_IMPORT ||--|{ USER : is-from
+    
     CSV_IMPORT {
-        string ID
-        string date
-        string user_id_fk
+        int id PK
+        datetime date
+        int user_id_fk FK
+        int csv_id FK
+        int type_import
     }
 
-    CSV_DATA ||--|{ CSV_IMPORT : is-from
     CSV_DATA {
-        string ID
-        string csv_import_id_fk
-        string other_csv_data
+        int csv_id PK
+        int csv_import_id_fk FK
+        datetime data
+        float balance
+        float equity
+        float deposit
     }
+
+    USER ||--o{ CSV_IMPORT : "is-from"
+    CSV_IMPORT ||--o{ CSV_DATA : "is-from"
 ```
 
 # Stack
@@ -81,14 +82,13 @@ erDiagram
 # Example:
 
 ## Login page
-![WhatsApp Image 2024-08-09 at 11 04 57 (3)](https://github.com/user-attachments/assets/52aa0edb-5b14-44d6-8439-3aea447f31a6)
+![https://github.com/user-attachments/assets/52aa0edb-5b14-44d6-8439-3aea447f31a6](https://i.imgur.com/hlRKRju.jpeg)
 
 ## System
-  ![WhatsApp Image 2024-08-09 at 11 04 57 (2)](https://github.com/user-attachments/assets/8b22e524-79c4-4b99-bb9d-ebe896f2173c)
+  ![WhatsApp Image 2024-08-09 at 11 04 57 (2)](https://i.imgur.com/UbjAOP7.jpeg)
   
 ## Graphics
-  ![WhatsApp Image 2024-08-09 at 11 04 57 (1)](https://github.com/user-attachments/assets/4fde5da7-9a61-496e-8350-f39a605c5af4)
+  ![WhatsApp Image 2024-08-09 at 11 04 57 (1)](https://i.imgur.com/miHvOkP.jpeg)
 
 ## Database 
-![cb65a1ca-37a7-455f-bd64-b84e0d00c71a](https://github.com/user-attachments/assets/0cb9e71d-346d-40c3-9b03-1bf22509e340)
-
+![cb65a1ca-37a7-455f-bd64-b84e0d00c71a](https://i.imgur.com/GdZsWl2.jpeg)
