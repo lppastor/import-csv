@@ -4,13 +4,14 @@ services:
     container_name: postgres-db
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: import-csv
+      POSTGRES_DB: import_csv
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Br@@5up3r
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data 
+      - db_data:/var/lib/postgresql/data
+      - ./sql-scripts:/docker-entrypoint-initdb.d
 
 volumes:
   db_data:
