@@ -10,7 +10,7 @@ test = "pytest"
 
 [packages]
 fastapi = "*"
-psycopg2 = "*"
+psycopg2-binary = "*"
 typing-extensions = "*"
 httpx = "*"
 pytest = "*"
