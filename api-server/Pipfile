@@ -10,7 +10,7 @@ test = "pytest"
 
 [packages]
 fastapi = "*"
-mysql-connector-python = "*"
+psycopg2 = "*"
 typing-extensions = "*"
 httpx = "*"
 pytest = "*"
