@@ -11,9 +11,8 @@ CREATE TABLE CLIENT (
 CREATE TABLE CSV_IMPORT (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     csv_import_date TIMESTAMP NOT NULL,
-    client_id_fk UUID NOT NULL,
-    csv_id UUID DEFAULT gen_random_uuid() NOT NULL,
     type_import INT NOT NULL,
+    client_id_fk UUID NOT NULL,
     FOREIGN KEY (client_id_fk) REFERENCES CLIENT(client_id)
 );
 
