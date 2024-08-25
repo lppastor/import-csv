@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE CLIENT (
     client_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    date_time TIMESTAMP NOT NULL,
+    client_date TIMESTAMP NOT NULL,
     name VARCHAR(40) NOT NULL,
     email VARCHAR(64) NOT NULL,
     password VARCHAR(256) NOT NULL
@@ -10,7 +10,7 @@ CREATE TABLE CLIENT (
 
 CREATE TABLE CSV_IMPORT (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    date_time TIMESTAMP NOT NULL,
+    csv_import_date TIMESTAMP NOT NULL,
     client_id_fk UUID NOT NULL,
     csv_id UUID DEFAULT gen_random_uuid() NOT NULL,
     type_import INT NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE CSV_IMPORT (
 CREATE TABLE CSV_DATA (
     csv_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     csv_import_id_fk UUID NOT NULL,
-    data TIMESTAMP NOT NULL,
+    csv_date TIMESTAMP NOT NULL,
     balance REAL NOT NULL,
     equity REAL NOT NULL,
     deposit REAL NOT NULL,
