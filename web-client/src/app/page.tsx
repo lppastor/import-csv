@@ -1,4 +1,4 @@
-import { CloudUpload, Eye, Trash2 } from 'lucide-react'
+import { CloudUpload, Dot, Eye, Trash2 } from 'lucide-react'
 import { Date } from '~/components/date'
 import { Button } from '~/components/ui/button'
 import {
@@ -17,43 +17,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
+import { CSVImportReturn, fetchCSVImports } from '~/lib/fake-data'
+import { moneyFormat } from '~/lib/utils'
 
-type ImportData = {
-  id: number
-  type: 'direct' | 'indirect'
-  date: string
-  lines: number
-}
+const Card = ({ importData }: { importData: CSVImportReturn }) => {
+  const {
+    id,
+    import_type,
+    created_at,
+    balance_sum,
+    data_lines,
+    deposit_sum,
+    equity_sum,
+  } = importData
 
-const Card = ({ importData }: { importData: ImportData }) => {
-  const { date, id, lines, type } = importData
-
-  const typeString: string = type === 'direct' ? 'Direta' : 'Indireta'
+  const typeString: string = import_type === 'direct' ? 'Direta' : 'Indireta'
 
   return (
-    <CardContainer>
+    <CardContainer className='shadow-lg'>
       <CardHeader>
         <CardTitle>Importação {id.toString().padStart(3, '0')}</CardTitle>
-        {/* <CardDescription>Importação direta</CardDescription> */}
+        <CardDescription className='flex items-center gap-px'>
+          <span>{typeString}</span>
+          <Dot />
+          <Date dateString={created_at} />
+        </CardDescription>
       </CardHeader>
       <CardContent className='space-y-5'>
         <div>
           <div className='flex justify-between items-center'>
-            <span>Tipo de importação</span>
+            <span>Balanço total</span>
             <span className='flex-1 mx-2 border-b border-dotted border-gray-500' />
-            <span className='font-bold'>{typeString}</span>
+            <span className='font-bold'>{moneyFormat(balance_sum)}</span>
           </div>
           <div className='flex justify-between items-center'>
-            <span>Data de importação</span>
+            <span>Total de depósitos</span>
             <span className='flex-1 mx-2 border-b border-dotted border-gray-500' />
-            <span className='font-bold'>
-              <Date dateString={date} />
-            </span>
+            <span className='font-bold'>{moneyFormat(deposit_sum)}</span>
+          </div>
+          <div className='flex justify-between items-center'>
+            <span>Equity total</span>
+            <span className='flex-1 mx-2 border-b border-dotted border-gray-500' />
+            <span className='font-bold'>{moneyFormat(equity_sum)}</span>
           </div>
           <div className='flex justify-between items-center'>
             <span>Número de linhas</span>
             <span className='flex-1 mx-2 border-b border-dotted border-gray-500' />
-            <span className='font-bold'>{lines}</span>
+            <span className='font-bold'>{data_lines}</span>
           </div>
         </div>
         <div className='flex items-center justify-end gap-3'>
@@ -81,28 +91,7 @@ const Card = ({ importData }: { importData: ImportData }) => {
 }
 
 export default function Home() {
-  const imports: ImportData[] = [
-    { id: 1, type: 'direct', date: '2024-08-22', lines: 258 },
-    { id: 2, type: 'indirect', date: '2024-08-23', lines: 116 },
-    { id: 3, type: 'direct', date: '2024-08-24', lines: 312 },
-    { id: 4, type: 'indirect', date: '2024-08-25', lines: 89 },
-    { id: 5, type: 'direct', date: '2024-08-26', lines: 78 },
-    { id: 6, type: 'indirect', date: '2024-08-27', lines: 45 },
-    { id: 7, type: 'direct', date: '2024-08-28', lines: 99 },
-    { id: 8, type: 'indirect', date: '2024-08-29', lines: 123 },
-    { id: 9, type: 'direct', date: '2024-08-30', lines: 456 },
-    { id: 10, type: 'indirect', date: '2024-08-31', lines: 789 },
-    { id: 11, type: 'direct', date: '2024-09-01', lines: 123 },
-    { id: 12, type: 'indirect', date: '2024-09-02', lines: 456 },
-    { id: 13, type: 'direct', date: '2024-09-03', lines: 789 },
-    { id: 14, type: 'indirect', date: '2024-09-04', lines: 123 },
-    { id: 15, type: 'direct', date: '2024-09-05', lines: 456 },
-    { id: 16, type: 'indirect', date: '2024-09-06', lines: 789 },
-    { id: 17, type: 'direct', date: '2024-09-07', lines: 123 },
-    { id: 18, type: 'indirect', date: '2024-09-08', lines: 456 },
-    { id: 19, type: 'direct', date: '2024-09-09', lines: 789 },
-    { id: 20, type: 'indirect', date: '2024-09-10', lines: 123 },
-  ]
+  const imports = fetchCSVImports()
 
   return (
     <div className='space-y-7'>
