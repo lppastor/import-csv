@@ -10,10 +10,15 @@ test = "pytest"
 
 [packages]
 fastapi = "*"
+sqlalchemy = "*" 
+pydantic = "*"
+pathlib = "*"
 psycopg2-binary = "*"
 typing-extensions = "*"
+python-dotenv = "*"
 httpx = "*"
 pytest = "*"
+
 
 [requires]
 python_version = "3.12"
