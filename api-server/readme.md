@@ -79,10 +79,12 @@ python manage.py makemigrations
 ```
 
 ### Aplicar migrations no banco de dados
+Aqui ele converte o model.py em sql
 
 ```
 python manage.py migrate
 ```
+
 
 ### Ver Migrations aplicadas
 
