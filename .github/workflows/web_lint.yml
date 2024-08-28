@@ -1,0 +1,30 @@
+name: WEB - Linting
+
+on: workflow_call
+
+jobs:
+  lint:
+    name: Check Code Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        if: ${{ hashFiles('web-client/package.json') != '' }}
+        with:
+          node-version: 19.x
+
+      - name: Install PNPM
+        if: ${{ hashFiles('web-client/package.json') != '' }}
+        run: npm i -g pnpm
+
+      - name: Install Dependencies
+        if: ${{ hashFiles('web-client/package.json') != '' }}
+        run: pnpm i
+
+      - name: Run ESLint
+        if: ${{ hashFiles('web-client/package.json') != '' }}
+        run: pnpm lint
