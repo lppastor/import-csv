@@ -1,6 +1,6 @@
 name: WEB - Linting
 
-on: workflow_call
+on: push
 
 jobs:
   lint:
