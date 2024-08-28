@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Dependencies
         if: ${{ hashFiles('web-client/package.json') != '' }}
-        run: pnpm i
+        run: cd web-client && pnpm i
 
       - name: Run ESLint
         if: ${{ hashFiles('web-client/package.json') != '' }}
