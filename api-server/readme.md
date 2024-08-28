@@ -65,3 +65,27 @@ polls/
     tests.py
     views.py
 ```
+
+
+## Migrations
+É Mais recomendado pelo framework ultilizar models.py invés de models.sql diretamente.
+
+### Criar nova migrations com base nas alterações em models.py
+
+Irá criar um arquivo 001_inicial.py em /polls/migrations
+
+```
+python manage.py makemigrations
+```
+
+### Aplicar migrations no banco de dados
+
+```
+python manage.py migrate
+```
+
+### Ver Migrations aplicadas
+
+```
+python manage.py showmigrations
+```
