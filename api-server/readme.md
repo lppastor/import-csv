@@ -65,6 +65,18 @@ polls/
     tests.py
     views.py
 ```
+## Definir Variaveis de ambiente
+
+Defina suas variaveis de ambiente em **myapp/.env.example** 
+
+```
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=
+POSTGRES_PORT=
+DJANGO_KEY=
+```
 
 
 ## Migrations
