@@ -65,3 +65,41 @@ polls/
     tests.py
     views.py
 ```
+## Definir Variaveis de ambiente
+
+Defina suas variaveis de ambiente em **myapp/.env.example** 
+
+```
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=
+POSTGRES_PORT=
+DJANGO_KEY=
+```
+
+
+## Migrations
+É Mais recomendado pelo framework ultilizar models.py invés de models.sql diretamente.
+
+### Criar nova migrations com base nas alterações em models.py
+
+Irá criar um arquivo 001_inicial.py em /polls/migrations
+
+```
+python manage.py makemigrations
+```
+
+### Aplicar migrations no banco de dados
+Aqui ele converte o model.py em sql
+
+```
+python manage.py migrate
+```
+
+
+### Ver Migrations aplicadas
+
+```
+python manage.py showmigrations
+```

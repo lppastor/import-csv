@@ -4,20 +4,17 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [scripts]
-dev = "uvicorn app.main:app --reload --port 5000"
-start = "uvicorn app.main:app --host 0.0.0.0 --port 8000"
-test = "pytest"
+start = "python manage.py runserver 0.0.0.0:8000"
+
 
 [packages]
-fastapi = "*"
-sqlalchemy = "*" 
+Django = "*"
 pydantic = "*"
 pathlib = "*"
 psycopg2-binary = "*"
 typing-extensions = "*"
 python-dotenv = "*"
-httpx = "*"
-pytest = "*"
+
 
 
 [requires]
