@@ -1,6 +1,10 @@
+'use client'
+
+import Link from 'next/link'
 import { cva } from 'class-variance-authority'
 import { LucideIcon } from 'lucide-react'
-import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
 import { cn } from '~/lib/utils'
 
 type NavItemProps = {
@@ -8,7 +12,6 @@ type NavItemProps = {
   title: string
   path: string
   open: boolean
-  active?: boolean
 }
 
 const linkVariants = cva('flex items-center group', {
@@ -64,13 +67,11 @@ const labelVariant = cva('text-secondary font-semibold', {
   },
 })
 
-export function NavItem({
-  Icon,
-  path,
-  title,
-  open,
-  active = false,
-}: NavItemProps) {
+export function NavItem({ Icon, path, title, open }: NavItemProps) {
+  const pathname = usePathname()
+
+  const active = pathname === path
+
   return (
     <Link href={path} className={cn(linkVariants({ open }))}>
       <div

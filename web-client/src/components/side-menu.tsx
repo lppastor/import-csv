@@ -28,10 +28,9 @@ export function SideMenu() {
         </header>
         <nav className='flex flex-col space-y-1'>
           <NavItem
-            active
             open={open}
             Icon={CloudUpload}
-            path='#'
+            path='/'
             title='Importar arquivo CSV'
           />
           <NavItem
