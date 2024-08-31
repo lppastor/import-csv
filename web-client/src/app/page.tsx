@@ -1,3 +1,5 @@
+'use client'
+
 import { CloudUpload } from 'lucide-react'
 
 import { Card } from '~/components/import-card'
@@ -12,6 +14,7 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { fetchCSVImports } from '~/lib/fake-data'
+import { notImplementedMessage } from '~/lib/not-implemented-message'
 
 export default function Home() {
   const imports = fetchCSVImports()
@@ -43,7 +46,11 @@ export default function Home() {
               <Input type='file' id='csv-file-input' />
             </div>
           </div>
-          <Button size='lg' className='flex gap-3 items-center text-base'>
+          <Button
+            onClick={notImplementedMessage}
+            size='lg'
+            className='flex gap-3 items-center text-base'
+          >
             <CloudUpload size='1.1em' />
             <span>Importar</span>
           </Button>

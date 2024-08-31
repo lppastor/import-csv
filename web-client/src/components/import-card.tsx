@@ -12,6 +12,7 @@ import {
 } from './ui/card'
 import { Date } from './date'
 import { Button } from './ui/button'
+import { notImplementedMessage } from '~/lib/not-implemented-message'
 
 export function Card({ importData }: { importData: CSVImportReturn }) {
   const {
@@ -61,6 +62,7 @@ export function Card({ importData }: { importData: CSVImportReturn }) {
         </div>
         <div className='flex items-center justify-end gap-3'>
           <Button
+            onClick={notImplementedMessage}
             variant='ghost'
             size='sm'
             className='flex gap-1 items-center hover:text-destructive hover:bg-destructive/10'
@@ -70,6 +72,7 @@ export function Card({ importData }: { importData: CSVImportReturn }) {
           </Button>
 
           <Button
+            onClick={notImplementedMessage}
             size='sm'
             variant='secondary'
             className='flex gap-1 items-center'
