@@ -132,3 +132,7 @@ export function fetchCSVImports(): CSVImportReturn[] {
 
   return data
 }
+
+export function fetchCSVData(import_id: number): CSVData[] {
+  return FAKE_CSV_DATA.filter((csvData) => csvData.csv_import_id === import_id)
+}
