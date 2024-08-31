@@ -37,7 +37,7 @@ export function SideMenu() {
           <NavItem
             open={open}
             Icon={ChartLine}
-            path='#'
+            path='/graph'
             title='Gráfico de importações'
           />
         </nav>
