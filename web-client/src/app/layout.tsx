@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 
 import { SideMenu } from '~/components/side-menu'
 import { MainHeader } from '~/components/main-header'
+import { Toaster } from '~/components/ui/sonner'
 
 import './globals.css'
 
@@ -30,6 +31,7 @@ export default function RootLayout({
             </div>
           </div>
         </div>
+        <Toaster />
       </body>
     </html>
   )
