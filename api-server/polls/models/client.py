@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password  # Create Hash passworf PBKDF2
 import uuid
 
 class Client(models.Model):
@@ -12,10 +13,18 @@ class Client(models.Model):
         return self.name
     
 
-    # Query put 
+    # Insert Query
+    @classmethod
+    def insert_user(name,email,password):
+        hash_password = make_password(password)
+        user = Client(
+            name = name,
+            email = email,
+            password = hash_password
+        )
+        return user
+        user.save() # Inset database
 
-    # Query get
 
-    # Query delete
 
-    # Query post
+    
