@@ -1,0 +1,30 @@
+version: '3'
+services:
+  db:
+    container_name: postgres-db
+    image: postgres:15-alpine
+    env_file:
+      - ./api-server/
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+
+# FETURE
+
+#   devcontainer:
+#     build:
+#       context: .
+#       dockerfile: .devcontainer/Dockerfile  
+#     volumes:
+#       - ~/.gitconfig:/home/vscode/.gitconfig  
+#       - .:/workspace
+#     ports:
+#       - "3000:3000"  
+#     command: /bin/zsh   
+#     env_file:
+#       - ./.env  
+      
+# volumes:
+#   db_data:
