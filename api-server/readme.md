@@ -49,13 +49,13 @@ Projetos vs. aplicativos
 Qual é a diferença entre um projeto e um aplicativo? Um aplicativo é um aplicativo da web que faz algo – por exemplo, um sistema de blog, um banco de dados de registros públicos ou um pequeno aplicativo de pesquisa. Um projeto é uma coleção de configurações e aplicativos para um site específico. Um projeto pode conter vários aplicativos. Um aplicativo pode estar em vários projetos.
 
 ``` shell
- python manage.py startapp polls
+ python manage.py startapp 
 ```
 
 ## Directory pools
 
 ```
-polls/
+project/
     __init__.py
     admin.py
     apps.py
@@ -103,3 +103,20 @@ python manage.py migrate
 ```
 python manage.py showmigrations
 ```
+
+## Geração de Hash PBKDF2
+
+```
+from django.contrib.auth.hashers import make_password  # Create Hash passworf PBKDF2
+```
+
+### Example
+
+```
+    hashed_password = make_password(password)
+```
+
+make_password(password): Esta função gera um hash seguro da senha, usando o algoritmo padrão do Django, que atualmente é o PBKDF2 com SHA-256.
+
+
+
