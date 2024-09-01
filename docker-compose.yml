@@ -4,7 +4,7 @@ services:
     container_name: postgres-db
     image: postgres:15-alpine
     env_file:
-      - ./api-server/
+      - ./api-server/project/.env
     ports:
       - "5432:5432"
     volumes:
