@@ -22,4 +22,14 @@ class CsvDataRepository:
             equity= equity,
             deposit= deposit 
         )
+    
+    
+    @classmethod
+    def get_import_by_client(cls,client):
+        return CsvImport.objects.filter(client=client)
+
+    @classmethod
+    def get_csv_data_by_import(cls, import_obj):
+        return CsvData.objects.filter(import_id=import_obj).values('date_time', 'balance', 'equity', 'deposit')
+    
 
