@@ -1,8 +1,6 @@
 from django.urls import path
-
-from  .views import views
+from .views.import_data import import_data
 
 urlpatterns = [
-    path("", views.index, name= "index"),
-    path("imports/", views.helloWord, name="members"), ## Return array de ids importado pelo usuarip
+    path("import-data/", import_data, name="import_data"),
 ]
