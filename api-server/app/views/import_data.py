@@ -6,7 +6,7 @@ from ..repository.client import ClientRepository # type: ignore
 from ..repository.csv_data import CsvDataRepository
 import json
 
-
+# POST CSV DATA
 @csrf_exempt
 def import_data(request):
     if request.method == "POST":
@@ -52,5 +52,31 @@ def import_data(request):
             return JsonResponse({
                 "error":"deu ruim"
             })
-            
-            
+  
+
+def get_user_imports(request, user_id):
+    Client= ClientRepository.get_client_by_id(user_id)
+    if not Client:
+        return JsonResponse ({
+            "error":"Client notFound" 
+        }, status=404
+        )
+    #Busca informações sobre os dados do csv    
+    imports = CsvDataRepository.get_import_by_client(Client)
+    
+    response_data = []
+    for import_obj in imports:
+        csv_data_list = list(
+            CsvDataRepository.get_csv_data_by_import(import_obj)
+        )
+        
+        import_data = {
+            "import_id":import_obj.import_id,
+            "import_type": import_obj.type_import,
+            "created_at": import_obj.created_at,
+            "data": csv_data_list
+        }
+        
+        response_data.append(import_data)
+        
+    return JsonResponse(response_data, safe=False, status=200)
