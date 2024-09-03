@@ -1,6 +1,7 @@
 'use client'
 
 import { CloudUpload } from 'lucide-react'
+import { ChangeEvent } from 'react'
 
 import { Card } from '~/components/import-card'
 import { Button } from '~/components/ui/button'
@@ -15,9 +16,31 @@ import {
 } from '~/components/ui/select'
 import { fetchCSVImports } from '~/lib/fake-data'
 import { notImplementedMessage } from '~/lib/not-implemented-message'
+import Papa from 'papaparse'
+
+type CSVLine = {
+  '<BALANCE>': string // "1000.00"
+  '<DATE>': string // "2022.07.01 00:00"
+  '<DEPOSIT LOAD>': string // "0.0000",
+  '<EQUITY>': string // "10000.00",
+}
 
 export default function Home() {
   const imports = fetchCSVImports()
+
+  function csvFileChangeHandler(e: ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return
+
+    const csvFile = e.target.files[0]
+
+    Papa.parse<CSVLine>(csvFile, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (result) => {
+        console.log(result.data)
+      },
+    })
+  }
 
   return (
     <div className='space-y-7'>
@@ -39,7 +62,12 @@ export default function Home() {
             </div>
             <div>
               <Label htmlFor='csv-file-input'>Arquivo CSV</Label>
-              <Input type='file' id='csv-file-input' />
+              <Input
+                type='file'
+                id='csv-file-input'
+                accept='.csv'
+                onChange={csvFileChangeHandler}
+              />
             </div>
           </div>
           <Button
@@ -57,7 +85,7 @@ export default function Home() {
         <Input className='w-44' placeholder='Procurar...' />
       </div>
       <div>
-        <div className='grid grid-cols-3 gap-8'>
+        <div className='flex flex-wrap gap-8'>
           {imports.reverse().map((importData) => (
             <Card key={importData.id} importData={importData} />
           ))}
