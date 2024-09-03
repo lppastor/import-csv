@@ -26,10 +26,6 @@ export default function Home() {
         <div className='flex gap-5 justify-between items-center'>
           <div className='flex gap-5'>
             <div>
-              <Label htmlFor='import-number-input'>Número da importação</Label>
-              <Input type='number' placeholder='042' id='import-number-input' />
-            </div>
-            <div>
               <Label>Tipo de importação</Label>
               <Select>
                 <SelectTrigger className='min-w-48'>
