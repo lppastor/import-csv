@@ -1,9 +1,11 @@
 'use client'
 
 import { CloudUpload } from 'lucide-react'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, useState } from 'react'
+import Papa from 'papaparse'
 
 import { Card } from '~/components/import-card'
+import { ImportTable } from '~/components/import-table'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
@@ -15,17 +17,13 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { fetchCSVImports } from '~/lib/fake-data'
-import { notImplementedMessage } from '~/lib/not-implemented-message'
-import Papa from 'papaparse'
 
-type CSVLine = {
-  '<BALANCE>': string // "1000.00"
-  '<DATE>': string // "2022.07.01 00:00"
-  '<DEPOSIT LOAD>': string // "0.0000",
-  '<EQUITY>': string // "10000.00",
-}
+import { CSVLine } from '~/types'
 
 export default function Home() {
+  const [csvImportData, setCsvImportData] = useState<CSVLine[] | undefined>()
+  const [showImportTableModal, setShowImportTableModal] = useState(false)
+
   const imports = fetchCSVImports()
 
   function csvFileChangeHandler(e: ChangeEvent<HTMLInputElement>) {
@@ -36,14 +34,12 @@ export default function Home() {
     Papa.parse<CSVLine>(csvFile, {
       header: true,
       skipEmptyLines: true,
-      complete: (result) => {
-        console.log(result.data)
-      },
+      complete: (result) => setCsvImportData(result.data),
     })
   }
 
   return (
-    <div className='space-y-7'>
+    <div className='flex flex-col gap-7'>
       <header className='space-y-5'>
         <h2 className='text-xl font-semibold'>Importar arquivo CSV</h2>
         <div className='flex gap-5 justify-between items-center'>
@@ -71,7 +67,8 @@ export default function Home() {
             </div>
           </div>
           <Button
-            onClick={notImplementedMessage}
+            onClick={() => setShowImportTableModal(true)}
+            disabled={!csvImportData}
             size='lg'
             className='flex gap-3 items-center text-base'
           >
@@ -91,6 +88,11 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <ImportTable
+        data={csvImportData as CSVLine[]}
+        show={showImportTableModal && csvImportData != undefined}
+        onClose={() => setShowImportTableModal(false)}
+      />
     </div>
   )
 }
