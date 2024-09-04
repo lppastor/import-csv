@@ -4,18 +4,19 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [scripts]
+migrate = "python manage.py migrate"
+makemigrations = "python manage.py makemigrations"
+dev = "python manage.py runserver"
 start = "python manage.py runserver 0.0.0.0:8000"
+manage  = "python manage.py"
 
 
 [packages]
 Django = "*"
-pydantic = "*"
-pathlib = "*"
-psycopg2-binary = "*"
-typing-extensions = "*"
 python-dotenv = "*"
-
+psycopg2-binary ="*"
+djangorestframework= "*"
 
 
 [requires]
-python_version = "3.12"
+python_version = "3.10.12"
