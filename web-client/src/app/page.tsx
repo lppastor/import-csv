@@ -16,15 +16,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
-import { fetchCSVImports } from '~/lib/fake-data'
+import { CSVImportReturn, fetchCSVImports } from '~/lib/fake-data'
 
 import { CSVLine } from '~/types'
 
 export default function Home() {
   const [csvImportData, setCsvImportData] = useState<CSVLine[] | undefined>()
   const [showImportTableModal, setShowImportTableModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const imports = fetchCSVImports()
+
+  function getTokens(csvImport: CSVImportReturn): string {
+    let tokens = []
+    tokens.push(`Importação ${csvImport.id.toString().padStart(3, '0')}`)
+    tokens.push(csvImport.import_type === 'direct' ? 'Direta' : 'Indireta')
+    tokens.push(csvImport.created_at)
+    tokens.push(csvImport.balance_sum.toString())
+    tokens.push(csvImport.data_lines.toString())
+    tokens.push(csvImport.deposit_sum.toString())
+    tokens.push(csvImport.equity_sum.toString())
+
+    return tokens.join(' ').toLocaleLowerCase()
+  }
+
+  function filterImports(imports: CSVImportReturn[]): CSVImportReturn[] {
+    if (searchQuery === '') return imports
+
+    return imports.filter((importData) =>
+      getTokens(importData).includes(searchQuery.toLocaleLowerCase())
+    )
+  }
 
   function csvFileChangeHandler(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files) return
@@ -79,13 +101,20 @@ export default function Home() {
       </header>
       <div className='flex items-center gap-5'>
         <div className='h-1 flex-1 bg-secondary rounded-lg' />
-        <Input className='w-44' placeholder='Procurar...' />
+        <Input
+          className='w-44'
+          placeholder='Procurar...'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
       <div>
         <div className='grid grid-cols-1 justify-center md:justify-start md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8'>
-          {imports.reverse().map((importData) => (
-            <Card key={importData.id} importData={importData} />
-          ))}
+          {filterImports(imports)
+            .reverse()
+            .map((importData) => (
+              <Card key={importData.id} importData={importData} />
+            ))}
         </div>
       </div>
       <ImportTable
