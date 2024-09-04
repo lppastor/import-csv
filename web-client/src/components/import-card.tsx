@@ -28,7 +28,7 @@ export function Card({ importData }: { importData: CSVImportReturn }) {
   const typeString: string = import_type === 'direct' ? 'Direta' : 'Indireta'
 
   return (
-    <CardContainer className='shadow-lg w-80'>
+    <CardContainer className='shadow-lg'>
       <CardHeader>
         <CardTitle>Importação {id.toString().padStart(3, '0')}</CardTitle>
         <CardDescription className='flex items-center gap-px'>
