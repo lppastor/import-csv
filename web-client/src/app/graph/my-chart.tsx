@@ -15,72 +15,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '~/components/ui/chart'
+import { chartData, filterImports, generateChartConfig } from './chart-data'
 
-const chartData = [
-  {
-    month: 'January',
-    'import-01': 186,
-    'import-02': 305,
-    'import-03': 237,
-    'import-04': 100,
-  },
-  {
-    month: 'February',
-    'import-01': 140,
-    'import-02': 220,
-    'import-03': 250,
-    'import-04': 120,
-  },
-  {
-    month: 'March',
-    'import-01': 150,
-    'import-02': 240,
-    'import-03': 300,
-    'import-04': 160,
-  },
-  {
-    month: 'April',
-    'import-01': 200,
-    'import-02': 230,
-    'import-03': 250,
-    'import-04': 170,
-  },
-  {
-    month: 'May',
-    'import-01': 200,
-    'import-02': 180,
-    'import-03': 260,
-    'import-04': 150,
-  },
-  {
-    month: 'June',
-    'import-01': 250,
-    'import-02': 190,
-    'import-03': 280,
-    'import-04': 200,
-  },
-]
+export function MyChart({ includedImports }: { includedImports: string[] }) {
+  const filteredChartData = filterImports(chartData, includedImports)
+  const chartConfig: ChartConfig = generateChartConfig(includedImports)
 
-const chartConfig = {
-  'import-01': {
-    label: 'import-1',
-    color: 'hsl(var(--chart-1))',
-  },
-  'import-02': {
-    label: 'import-2',
-    color: 'hsl(var(--chart-2))',
-  },
-  'import-03': {
-    label: 'import-3',
-    color: 'hsl(var(--chart-3))',
-  },
-  'import-04': {
-    label: 'import-4',
-    color: 'hsl(var(--chart-4))',
-  },
-} satisfies ChartConfig
-
-export function MyChart() {
   return (
     <Card>
       <CardHeader>
@@ -91,7 +31,7 @@ export function MyChart() {
         <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={filteredChartData}
             margin={{
               left: 12,
               right: 12,
