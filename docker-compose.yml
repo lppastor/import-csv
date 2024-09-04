@@ -1,0 +1,9 @@
+services:
+  web:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./web-client:/app
+    ports:
+      - "3000:3000" # out:in
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm build && pnpm start"
