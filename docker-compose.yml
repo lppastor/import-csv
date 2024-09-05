@@ -1,3 +1,4 @@
+
 version: '3'
 services:
   db:
@@ -11,20 +12,14 @@ services:
       - db_data:/var/lib/postgresql/data
 
 
-# FETURE
-
-#   devcontainer:
-#     build:
-#       context: .
-#       dockerfile: .devcontainer/Dockerfile  
-#     volumes:
-#       - ~/.gitconfig:/home/vscode/.gitconfig  
-#       - .:/workspace
-#     ports:
-#       - "3000:3000"  
-#     command: /bin/zsh   
-#     env_file:
-#       - ./.env  
+  web:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./web-client:/app
+    ports:
+      - "3000:3000" 
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm build && pnpm start"
       
 volumes:
   db_data:
