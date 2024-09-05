@@ -37,32 +37,32 @@ class CsvDataRepository:
     @classmethod
     def  get_csv_data_by_import_ids_and_client(cls, import_ids, client):
         """Filtra os dados do csv com base nos ids importados"""
-        return CsvData.objects.filter(import_id__in=import_ids, import_ids__client= client)
+        return CsvData.objects.filter(import_id__in=import_ids, import_id__client= client)
     
     @classmethod
-    def get_montly_balance_sumary(cls, csv_data):
+    def get_monthly_balance_summary(cls, csv_data):
         """Agrupa por mês e soma a coluna balance"""
-        balance_sumary= CsvData.annotate(
-            mouth= TruncMonth("date_time")
+        balance_sumary= csv_data.annotate(
+            month= TruncMonth("date_time")
         ).values(
-            'mounth','import_id'
-        ).anottate(
-            total_balance= sum('balance')
-        ).order_by('mounth')
+            'month','import_id'
+        ).annotate(
+            total_balance= Sum('balance')
+        ).order_by('month')
 
         response_data = {}
         for entry in balance_sumary:
-            mounth= entry['mounth'].strftime('%Y-%m')
+            month= entry['month'].strftime('%Y-%m')
             import_id= entry['import_id']
-            if mounth not in response_data:
-                response_data[mounth]= {}
-            response_data[mounth][f'Import {import_id}']= entry['total_balance']    
+            if month not in response_data:
+                response_data[month]= {}
+            response_data[month][f'Import {import_id}']= entry['total_balance']    
         
         # Converter para lista de json
         formatted_response= []
-        for mounth, import_data in response_data.items():
-            formatted_entry= {'mounth':mounth}
+        for month, import_data in response_data.items():
+            formatted_entry= {'month':month}
             formatted_entry.update(import_data)
-            formatted_entry.append(formatted_entry)
+            formatted_response.append(formatted_entry)
 
         return formatted_response
