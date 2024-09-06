@@ -51,14 +51,19 @@ class CsvDataRepository:
             total_balance= Sum('balance')
         ).order_by('month')
 
+        #Extrar id dos imports
+        import_ids= csv_data.values_list('import_id', flat=True).distinct()
+        
         response_data = {}
         for entry in balance_sumary:
             month= entry['month'].strftime('%Y-%m')
             import_id= entry['import_id']
+            
             if month not in response_data:
-                response_data[month]= {}
-            response_data[month][f'Import {import_id}']= entry['total_balance']    
-        
+                response_data[month]= {f'Import {i}':0 for i in import_ids}
+            
+            response_data[month][f'Import {import_id}']= entry['total_balance']
+            
         # Converter para lista de json
         formatted_response= []
         for month, import_data in response_data.items():
