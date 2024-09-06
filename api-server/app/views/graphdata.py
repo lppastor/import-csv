@@ -16,7 +16,7 @@ def get_balance_summary(request):
     if not client:
         return JsonResponse({"error": "Client not found"}, status=404)
 
-    # Filtra os dados CSV com base no client_id e nos import_ids fornecidos
+    # Filtra os dados CSV com base no client_id e nos import_ids fornecidos.
     csv_data = CsvDataRepository.get_csv_data_by_import_ids_and_client(import_ids, client)
 
     # Agrupa por mês e por import_id, somando os valores de balance

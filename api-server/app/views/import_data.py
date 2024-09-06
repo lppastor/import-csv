@@ -6,7 +6,7 @@ from ..repository.client import ClientRepository # type: ignore
 from ..repository.csv_data import CsvDataRepository
 import json
 
-# POST CSV DATA
+# POST CSV DATA R
 @csrf_exempt
 def import_data(request):
     if request.method == "POST":
@@ -53,7 +53,8 @@ def import_data(request):
                 "error":"deu ruim"
             })
   
-
+  
+  
 def get_user_imports(request, user_id):
     Client= ClientRepository.get_client_by_id(user_id)
     if not Client:
