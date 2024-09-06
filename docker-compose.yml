@@ -3,7 +3,7 @@ version: '3'
 services:
   db:
     container_name: postgres-db
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     env_file:
       - ./api-server/project/.env
     ports:
@@ -13,12 +13,12 @@ services:
 
 
   web:
-    image: node:18-alpine
+    image: node:20-alpine
     working_dir: /app
     volumes:
       - ./web-client:/app
     ports:
-      - "3000:3000" 
+      - "3000:3000" # out:in
     command: sh -c "npm install -g pnpm && pnpm install && pnpm build && pnpm start"
       
 volumes:

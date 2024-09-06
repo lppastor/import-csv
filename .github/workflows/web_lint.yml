@@ -27,4 +27,4 @@ jobs:
 
       - name: Run ESLint
         if: ${{ hashFiles('web-client/package.json') != '' }}
-        run: pnpm lint
+        run: cd web-client && pnpm lint
