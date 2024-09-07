@@ -1,7 +1,6 @@
 from django.db import models
 from ..models.client import Client
-from django.contrib.auth.hashers import make_password  # Create Hash passworf PBKDF2
-
+from django.contrib.auth.hashers import make_password  # Create Hash passworf PBKDF2 com Salt
 
 
 class ClientRepository:
