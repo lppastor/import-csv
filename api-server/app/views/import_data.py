@@ -59,7 +59,7 @@ def import_data(request):
 def get_user_imports(request, user_id):
     Client= ClientRepository.get_client_by_id(user_id)
     if not Client:
-        raise Http404('Client not found. Please check the client ID and try again')
+        raise Http404('Client not found. Please check the client ID and try again') ## Return error
     
     #Busca informações sobre os dados do csv    
     imports = CsvDataRepository.get_import_by_client(Client)
