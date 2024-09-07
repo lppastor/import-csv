@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import Http404
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -58,10 +59,8 @@ def import_data(request):
 def get_user_imports(request, user_id):
     Client= ClientRepository.get_client_by_id(user_id)
     if not Client:
-        return JsonResponse ({
-            "error":"Client notFound" 
-        }, status=404
-        )
+        raise Http404('Client not found. Please check the client ID and try again')
+    
     #Busca informações sobre os dados do csv    
     imports = CsvDataRepository.get_import_by_client(Client)
     
