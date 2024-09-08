@@ -52,3 +52,32 @@ def import_data(request):
         
         except Exception as e:
             return BadRequest('Unable to insert csv, please check the information and try again.')
+        
+            
+def get_csv_data(request):
+    client_id = request.GET.get('client')
+    import_id_str = request.GET.get('import_ids')
+
+    import_id = int(import_id_str)
+   # Buscar dados que correspondam ao cliente e à importação
+    csv_data = CsvDataRepository.get_csv_data_by_import_id_and_client(import_id, client_id)
+        
+       
+    if not csv_data.exists(): 
+        return JsonResponse({"status": "CSV data not found."}, status=404)
+ 
+    csv_list = []
+
+    
+    for obj in csv_data:
+        csv_list.append({
+            "csv_import_id": obj.import_id.import_id,
+            "date_time": obj.date_time.isoformat(),  
+            "balance": float(obj.balance),  
+            "equity": float(obj.equity),    
+            "deposit": float(obj.deposit)   
+        })
+        
+    # Retornar os dados como JSON com status 200
+    return JsonResponse(csv_list, safe=False, status=200)
+
