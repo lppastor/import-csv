@@ -56,7 +56,7 @@ def import_data(request):
             
 def get_csv_data(request):
     client_id = request.GET.get('client')
-    import_id_str = request.GET.get('import_ids')
+    import_id_str = request.GET.get('import_id')
 
     import_id = int(import_id_str)
    # Buscar dados que correspondam ao cliente e à importação
