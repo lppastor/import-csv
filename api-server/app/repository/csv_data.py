@@ -13,8 +13,8 @@ class CsvDataRepository:
             client=client,
             type_import= import_type
         )
-    
-    
+        
+          
     @classmethod
     def create_csv_data(cls,csv_import, date_time, balance, equity, deposit):
         return CsvData.objects.create(
@@ -42,8 +42,12 @@ class CsvDataRepository:
     @classmethod
     def  get_csv_data_by_import_ids_and_client(cls, import_ids, client):
         """Filtra os dados do csv com base nos ids importados"""
-        return CsvData.objects.filter(import_id__in=import_ids, import_id__client= client)
+        return CsvData.objects.filter(import_id__in=import_ids, import_id__client= client)   
 
+    @classmethod
+    def get_csv_data_by_import_id_and_client(cls, import_id, client):
+        """Filtra os dados do csv com base no id importado e no cliente."""
+        return CsvData.objects.filter(import_id=import_id, import_id__client=client)
         
     @classmethod
     def get_monthly_balance_summary(cls, csv_data):
