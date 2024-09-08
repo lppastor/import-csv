@@ -1,5 +1,6 @@
 from django.urls import path
-from .views.import_data import import_data,get_user_imports
+from .views.import_data import import_data
+from .views.get_user_imports import get_user_imports
 from .views.graphdata import get_balance_summary
 
 urlpatterns = [
