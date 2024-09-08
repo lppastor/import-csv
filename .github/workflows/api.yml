@@ -1,0 +1,51 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - main 
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:15
+        env:
+          DATABASE_VARIABLE: ${{ secrets.DATABASE_VARIABLE }}
+        
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10.12'    
+      
+    - name: Install dependencies
+      run: |
+        pip install pipenv
+        pipenv install --dev
+      
+    - name: Run Migrations
+      env:
+        DATABASE_URL: ${{secrets.DATABASE_URL}} 
+      
+      run: |
+        pipenv run migrate
+    
+    - name: Run tests
+      env:
+        DATABASE_URL: ${{secrets.DATABASE_URL}}
+      run: |
+        pipenv run pytest
+      
+    
