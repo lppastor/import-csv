@@ -1,7 +1,7 @@
 from ..models.csv_data import CsvData  # Import table
 from ..models.csv_import import CsvImport
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum,Count
 from django.db.models.functions import TruncMonth
 
 
@@ -32,7 +32,12 @@ class CsvDataRepository:
 
     @classmethod
     def get_csv_data_by_import(cls, import_obj):
-        return CsvData.objects.filter(import_id=import_obj).values('date_time', 'balance', 'equity', 'deposit')
+        return CsvData.objects.filter(import_id=import_obj).aggregate(
+            balance_sum= Sum('balance'),
+            equity_sum= Sum('equity'),
+            deposit_sum= Sum('deposit'),
+            data_lines=Count('csv_id')
+        )
     
     @classmethod
     def  get_csv_data_by_import_ids_and_client(cls, import_ids, client):
