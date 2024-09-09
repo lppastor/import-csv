@@ -55,33 +55,3 @@ class TestModels(TestCase):
         self.assertEqual(self.csv_data.equity, 500.0)
         self.assertEqual(self.csv_data.deposit, 200.0)
         self.assertEqual(self.csv_data.import_id, self.csv_import)        
-        
-    # class csv_data(models.Model):
-    # csv_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # import_id = models.ForeignKey(CsvImport, on_delete=models.CASCADE)
-    # date_time = models.DateTimeField()
-    # balance = models.FloatField()
-    # equity = models.FloatField()
-    # deposit = models.FloatField()
-
-
-    
-    # import_id = models.AutoField(primary_key=True)
-    # csv_import_date = models.DateTimeField(auto_now_add=True)
-    # type_import = models.IntegerField()
-    # client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    # created_at = models.DateTimeField(auto_now_add=True)
-
-        
-        
-        
-    #     class CsvData(models.Model):
-    # csv_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # import_id = models.ForeignKey(CsvImport, on_delete=models.CASCADE)
-    # date_time = models.DateTimeField()
-    # balance = models.FloatField()
-    # equity = models.FloatField()
-    # deposit = models.FloatField()
-
-    # def __str__(self):
-    #     return f"Data record {self.csv_id} for import {self.import_id.import_id}"
