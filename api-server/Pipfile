@@ -16,6 +16,7 @@ manage  = "python manage.py"
 Django = "*"
 python-dotenv = "*"
 psycopg2-binary ="*"
+pytest-django= "*"
 djangorestframework= "*"
 
 
