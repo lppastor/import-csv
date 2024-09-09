@@ -103,7 +103,7 @@ class CsvDataRepositoryTest(TestCase):
             deposit=400.0
         )
         
-        
+        #teste
         csv_data = CsvData.objects.all()
         summary = CsvDataRepository.get_monthly_balance_summary(csv_data)
         self.assertEqual(len(summary), 1)
