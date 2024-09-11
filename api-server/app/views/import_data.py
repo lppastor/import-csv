@@ -7,9 +7,56 @@ from django.views.decorators.csrf import csrf_exempt
 from ..repository.client import ClientRepository # type: ignore
 from ..repository.csv_data import CsvDataRepository
 import json
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+
 
 # POST CSV DATA R
 @csrf_exempt
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'client_id': openapi.Schema(type=openapi.TYPE_STRING, description='ID do cliente'),
+            'import_type': openapi.Schema(type=openapi.TYPE_STRING, description='Tipo de importação'),
+            'data': openapi.Schema(
+                type=openapi.TYPE_ARRAY,
+                items=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'date': openapi.Schema(type=openapi.TYPE_STRING, description='Data em formato ISO'),
+                        'balance': openapi.Schema(type=openapi.TYPE_NUMBER, description='Saldo'),
+                        'equity': openapi.Schema(type=openapi.TYPE_NUMBER, description='Equity'),
+                        'deposit': openapi.Schema(type=openapi.TYPE_NUMBER, description='Depósito'),
+                    }
+                )
+            ),
+        },
+        required=['client_id', 'import_type', 'data'],
+        example={
+            'client_id': '12345',
+            'import_type': 'tipo_de_importacao',
+            'data': [
+                {
+                    'date': '2024-09-11T00:00:00Z',
+                    'balance': 1000.0,
+                    'equity': 1500.0,
+                    'deposit': 500.0,
+                },
+                {
+                    'date': '2024-09-12T00:00:00Z',
+                    'balance': 2000.0,
+                    'equity': 2500.0,
+                    'deposit': 1000.0,
+                }
+            ]
+        }
+    )
+)
+@api_view(['POST'])
 def import_data(request):
     if request.method == "POST":
         try:
@@ -53,7 +100,7 @@ def import_data(request):
         except Exception as e:
             return BadRequest('Unable to insert csv, please check the information and try again.')
         
-            
+@api_view(['GET'])          
 def get_csv_data(request):
     client_id = request.GET.get('client')
     import_id_str = request.GET.get('import_id')

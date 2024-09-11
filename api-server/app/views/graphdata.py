@@ -1,7 +1,9 @@
 from django.http import JsonResponse
 from app.repository.client import ClientRepository
 from app.repository.csv_data import CsvDataRepository
+from rest_framework.decorators import api_view
 
+@api_view(['GET'])
 def get_balance_summary(request):
     client_id = request.GET.get('client_id')
     import_ids= request.GET.get('import_ids')
