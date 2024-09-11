@@ -15,15 +15,8 @@ import { Button } from './ui/button'
 import { notImplementedMessage } from '~/lib/not-implemented-message'
 
 export function Card({ importData }: { importData: CSVImportReturn }) {
-  const {
-    id,
-    import_type,
-    created_at,
-    balance_sum,
-    data_lines,
-    deposit_sum,
-    equity_sum,
-  } = importData
+  const { id, import_type, created_at, balance_sum, deposit_sum, equity_sum } =
+    importData
 
   const typeString: string = import_type === 'direct' ? 'Direta' : 'Indireta'
 
@@ -53,11 +46,6 @@ export function Card({ importData }: { importData: CSVImportReturn }) {
             <span>Equity total</span>
             <span className='flex-1 mx-2 border-b border-dotted border-gray-500' />
             <span className='font-bold'>{moneyFormat(equity_sum)}</span>
-          </div>
-          <div className='flex justify-between items-center'>
-            <span>Número de linhas</span>
-            <span className='flex-1 mx-2 border-b border-dotted border-gray-500' />
-            <span className='font-bold'>{data_lines}</span>
           </div>
         </div>
         <div className='flex items-center justify-end gap-3'>

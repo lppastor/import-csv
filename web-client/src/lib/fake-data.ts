@@ -12,29 +12,6 @@ interface CSVData {
   deposit: number
 }
 
-const FAKE_CSV_IMPORT: CSVImport[] = [
-  {
-    id: 1,
-    import_type: 'direct',
-    created_at: '2024-08-22T12:00:00Z',
-  },
-  {
-    id: 2,
-    import_type: 'indirect',
-    created_at: '2024-08-23T12:00:00Z',
-  },
-  {
-    id: 3,
-    import_type: 'direct',
-    created_at: '2024-08-24T12:00:00Z',
-  },
-  {
-    id: 4,
-    import_type: 'direct',
-    created_at: '2024-08-25T12:00:00Z',
-  },
-]
-
 const FAKE_CSV_DATA: CSVData[] = [
   {
     csv_import_id: 1,
@@ -105,32 +82,33 @@ export interface CSVImportReturn {
   id: number
   import_type: 'direct' | 'indirect'
   created_at: string
-  data_lines: number
   balance_sum: number
   equity_sum: number
   deposit_sum: number
 }
 
-export function fetchCSVImports(): CSVImportReturn[] {
-  const data: CSVImportReturn[] = FAKE_CSV_IMPORT.map((csvImport) => {
-    return {
-      ...csvImport,
-      data_lines: FAKE_CSV_DATA.filter(
-        (csvData) => csvData.csv_import_id === csvImport.id
-      ).length,
-      balance_sum: FAKE_CSV_DATA.filter(
-        (csvData) => csvData.csv_import_id === csvImport.id
-      ).reduce((acc, curr) => acc + curr.balance, 0),
-      equity_sum: FAKE_CSV_DATA.filter(
-        (csvData) => csvData.csv_import_id === csvImport.id
-      ).reduce((acc, curr) => acc + curr.equity, 0),
-      deposit_sum: FAKE_CSV_DATA.filter(
-        (csvData) => csvData.csv_import_id === csvImport.id
-      ).reduce((acc, curr) => acc + curr.deposit, 0),
-    }
-  })
+type CsvResponse = {
+  csv_id: number
+  import_type: string
+  created_at: string
+  balance_sum: number
+  equity_sum: number
+  deposit_sum: number
+}
 
-  return data
+export async function fetchCSVImports(): Promise<CSVImportReturn[]> {
+  const data: CsvResponse[] = await fetch(
+    'http://localhost:8000/app/user-imports/007f0a12-3b15-4fe6-ab3f-e09ddb7386aa/'
+  ).then((res) => res.json())
+
+  return data.map((csvImport) => ({
+    id: csvImport.csv_id,
+    import_type: csvImport.import_type === 'direct' ? 'direct' : 'indirect',
+    created_at: csvImport.created_at,
+    balance_sum: csvImport.balance_sum,
+    equity_sum: csvImport.equity_sum,
+    deposit_sum: csvImport.deposit_sum,
+  }))
 }
 
 export function fetchCSVData(import_id: number): CSVData[] {

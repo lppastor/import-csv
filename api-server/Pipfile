@@ -11,13 +11,12 @@ dev = "python manage.py runserver"
 start = "python manage.py runserver 0.0.0.0:8000"
 manage  = "python manage.py"
 
-
 [packages]
 Django = "*"
 python-dotenv = "*"
 psycopg2-binary ="*"
 djangorestframework= "*"
-
+django-cors-headers = "*"
 
 [requires]
 python_version = "3.10.12"
