@@ -1,7 +1,7 @@
 'use client'
 
 import { CloudUpload, Loader2 } from 'lucide-react'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import Papa from 'papaparse'
 
 import { Card } from '~/components/import-card'
@@ -33,7 +33,16 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false)
 
-  const imports = fetchCSVImports()
+  const [imports, setImports] = useState<CSVImportReturn[]>([])
+  const [loadingImports, setLoadingImports] = useState(true)
+
+  function fetchImports() {
+    setLoadingImports(true)
+    fetchCSVImports().then((data) => {
+      setImports(data)
+      setLoadingImports(false)
+    })
+  }
 
   function getTokens(csvImport: CSVImportReturn): string {
     let tokens = []
@@ -106,7 +115,13 @@ export default function Home() {
       })
 
     setLoading(false)
+
+    fetchImports()
   }
+
+  useEffect(() => {
+    fetchImports()
+  }, [])
 
   return (
     <div className='flex flex-col gap-7'>
@@ -177,13 +192,28 @@ export default function Home() {
         />
       </div>
       <div>
-        <div className='grid grid-cols-1 justify-center md:justify-start md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8'>
-          {filterImports(imports)
-            .reverse()
-            .map((importData) => (
-              <Card key={importData.id} importData={importData} />
-            ))}
-        </div>
+        {loadingImports && (
+          <div className='w-full h-full flex justify-center items-center p-20 gap-2'>
+            <Loader2 size='1em' className='animate-spin' />
+            <span>Carregando imports...</span>
+          </div>
+        )}
+
+        {imports.length === 0 && !loadingImports && (
+          <div className='w-full h-full flex justify-center items-center p-20'>
+            <span>Nenhum import para mostrar...</span>
+          </div>
+        )}
+
+        {imports.length > 0 && !loadingImports && (
+          <div className='grid grid-cols-1 justify-center md:justify-start md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8'>
+            {filterImports(imports)
+              .reverse()
+              .map((importData) => (
+                <Card key={importData.id} importData={importData} />
+              ))}
+          </div>
+        )}
       </div>
       <ImportTable
         data={csvImportData as CSVLine[]}
