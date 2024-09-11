@@ -1,6 +1,6 @@
 'use client'
 
-import { CloudUpload } from 'lucide-react'
+import { CloudUpload, Loader2 } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 import Papa from 'papaparse'
 
@@ -19,11 +19,19 @@ import {
 import { CSVImportReturn, fetchCSVImports } from '~/lib/fake-data'
 
 import { CSVLine } from '~/types'
+import { toast } from 'sonner'
+
+type ImportType = 'direct' | 'indirect'
 
 export default function Home() {
   const [csvImportData, setCsvImportData] = useState<CSVLine[] | undefined>()
+  const [importTypes, setImportTypes] = useState<ImportType>()
+  const [importNumber, setImportNumber] = useState<number>()
+
   const [showImportTableModal, setShowImportTableModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+
+  const [loading, setLoading] = useState(false)
 
   const imports = fetchCSVImports()
 
@@ -60,6 +68,46 @@ export default function Home() {
     })
   }
 
+  function remadeCsvLine(csvLine: CSVLine) {
+    return {
+      balance: csvLine['<BALANCE>'],
+      date: new Date(csvLine['<DATE>'].split(' ')[0]).toISOString(),
+      deposit: csvLine['<DEPOSIT LOAD>'],
+      equity: csvLine['<EQUITY>'],
+    }
+  }
+
+  async function handleImportCsv() {
+    setLoading(true)
+
+    if (!csvImportData || !importTypes || !importNumber) {
+      toast.error('Preencha todos os campos')
+      setLoading(false)
+      return
+    }
+
+    const importPayload = {
+      client_id: '007f0a12-3b15-4fe6-ab3f-e09ddb7386aa',
+      import_type: importTypes === 'direct' ? 1 : 2,
+      data: csvImportData.map(remadeCsvLine),
+    }
+
+    await fetch('http://localhost:8000/app/import-data/', {
+      method: 'POST',
+      body: JSON.stringify(importPayload),
+      mode: 'cors',
+    })
+      .then((response) => {
+        response.status === 201 && toast.success('Importado com sucesso')
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Erro ao importar arquivo')
+      })
+
+    setLoading(false)
+  }
+
   return (
     <div className='flex flex-col gap-7'>
       <header className='space-y-5'>
@@ -67,8 +115,22 @@ export default function Home() {
         <div className='flex gap-5 justify-between items-center'>
           <div className='flex gap-5'>
             <div>
+              <Label htmlFor='csv-id'>Import ID</Label>
+              <Input
+                type='number'
+                id='csv-id'
+                value={importNumber}
+                onChange={(e) => setImportNumber(Number(e.target.value))}
+                className='w-24'
+              />
+            </div>
+            <div>
               <Label>Tipo de importação</Label>
-              <Select>
+              <Select
+                // defaultValue={importTypes}
+                value={importTypes}
+                onValueChange={(type) => setImportTypes(type as ImportType)}
+              >
                 <SelectTrigger className='min-w-48'>
                   <SelectValue placeholder='Direta ou Indireta' />
                 </SelectTrigger>
@@ -89,12 +151,18 @@ export default function Home() {
             </div>
           </div>
           <Button
-            onClick={() => setShowImportTableModal(true)}
-            disabled={!csvImportData}
+            onClick={handleImportCsv}
+            disabled={
+              !csvImportData || !importTypes || !importNumber || loading
+            }
             size='lg'
             className='flex gap-3 items-center text-base'
           >
-            <CloudUpload size='1.1em' />
+            {loading ? (
+              <Loader2 size='1.1em' className='animate-spin' />
+            ) : (
+              <CloudUpload size='1.1em' />
+            )}
             <span>Importar</span>
           </Button>
         </div>
