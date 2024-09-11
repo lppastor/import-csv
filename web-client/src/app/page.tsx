@@ -50,7 +50,6 @@ export default function Home() {
     tokens.push(csvImport.import_type === 'direct' ? 'Direta' : 'Indireta')
     tokens.push(csvImport.created_at)
     tokens.push(csvImport.balance_sum.toString())
-    tokens.push(csvImport.data_lines.toString())
     tokens.push(csvImport.deposit_sum.toString())
     tokens.push(csvImport.equity_sum.toString())
 

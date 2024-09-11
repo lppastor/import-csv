@@ -15,11 +15,25 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '~/components/ui/chart'
-import { chartData, filterImports, generateChartConfig } from './chart-data'
+import { ImportData, filterImports, generateChartConfig } from './chart-data'
 
-export function MyChart({ includedImports }: { includedImports: string[] }) {
+export function MyChart({
+  includedImports,
+  chartData,
+  importList,
+}: {
+  includedImports: string[]
+  chartData: ImportData[]
+  importList: string[]
+}) {
   const filteredChartData = filterImports(chartData, includedImports)
   const chartConfig: ChartConfig = generateChartConfig(includedImports)
+
+  function getHslColor(num: string) {
+    const calculatedNume = parseInt(num) * 45
+
+    return `hsl(${calculatedNume} 80% 60%)`
+  }
 
   return (
     <Card>
@@ -46,34 +60,59 @@ export function MyChart({ includedImports }: { includedImports: string[] }) {
               tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip cursor={true} content={<ChartTooltipContent />} />
-            <Line
-              dataKey='import-01'
+            {/* <Line
+              dataKey='Import 1'
               type='monotone'
               stroke='hsl(220 70% 50%)'
               strokeWidth={2}
               dot={true}
             />
             <Line
-              dataKey='import-02'
+              dataKey='Import 2'
               type='monotone'
               stroke='hsl(160 60% 45%)'
               strokeWidth={2}
               dot={true}
             />
             <Line
-              dataKey='import-03'
+              dataKey='Import 3'
               type='monotone'
               stroke='hsl(30 80% 55%)'
               strokeWidth={2}
               dot={true}
             />
             <Line
-              dataKey='import-04'
+              dataKey='Import 4'
               type='monotone'
               stroke='hsl(0 70% 50%)'
               strokeWidth={2}
               dot={true}
             />
+            <Line
+              dataKey='Import 5'
+              type='monotone'
+              stroke='hsl(330 70% 50%)'
+              strokeWidth={2}
+              dot={true}
+            />
+            <Line
+              dataKey='Import 6'
+              type='monotone'
+              stroke='hsl(290 70% 50%)'
+              strokeWidth={2}
+              dot={true}
+            /> */}
+
+            {importList.map((importName) => (
+              <Line
+                key={importName}
+                dataKey={importName}
+                type='monotone'
+                stroke={getHslColor(importName.split(' ')[1])}
+                strokeWidth={2}
+                dot={true}
+              />
+            ))}
           </LineChart>
         </ChartContainer>
       </CardContent>
