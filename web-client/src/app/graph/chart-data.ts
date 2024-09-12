@@ -1,5 +1,5 @@
 // Define the type for the data objects
-interface ImportData {
+export interface ImportData {
   month: string
   [key: string]: string | number // Allow other keys with string values
 }
@@ -23,50 +23,50 @@ export function filterImports(
   })
 }
 
-export const chartData: ImportData[] = [
-  {
-    month: 'January',
-    'import-01': 186,
-    'import-02': 305,
-    'import-03': 237,
-    'import-04': 100,
-  },
-  {
-    month: 'February',
-    'import-01': 140,
-    'import-02': 220,
-    'import-03': 250,
-    'import-04': 120,
-  },
-  {
-    month: 'March',
-    'import-01': 150,
-    'import-02': 240,
-    'import-03': 300,
-    'import-04': 160,
-  },
-  {
-    month: 'April',
-    'import-01': 200,
-    'import-02': 230,
-    'import-03': 250,
-    'import-04': 170,
-  },
-  {
-    month: 'May',
-    'import-01': 200,
-    'import-02': 180,
-    'import-03': 260,
-    'import-04': 150,
-  },
-  {
-    month: 'June',
-    'import-01': 250,
-    'import-02': 190,
-    'import-03': 280,
-    'import-04': 200,
-  },
-]
+// export const chartData: ImportData[] = [
+//   {
+//     month: 'January',
+//     'Import 01': 186,
+//     'Import 02': 305,
+//     'Import 03': 237,
+//     'Import 04': 100,
+//   },
+//   {
+//     month: 'February',
+//     'Import 01': 140,
+//     'Import 02': 220,
+//     'Import 03': 250,
+//     'Import 04': 120,
+//   },
+//   {
+//     month: 'March',
+//     'Import 01': 150,
+//     'Import 02': 240,
+//     'Import 03': 300,
+//     'Import 04': 160,
+//   },
+//   {
+//     month: 'April',
+//     'Import 01': 200,
+//     'Import 02': 230,
+//     'Import 03': 250,
+//     'Import 04': 170,
+//   },
+//   {
+//     month: 'May',
+//     'Import 01': 200,
+//     'Import 02': 180,
+//     'Import 03': 260,
+//     'Import 04': 150,
+//   },
+//   {
+//     month: 'June',
+//     'Import 01': 250,
+//     'Import 02': 190,
+//     'Import 03': 280,
+//     'Import 04': 200,
+//   },
+// ]
 
 interface ChartConfig {
   [key: string]: {
@@ -76,7 +76,7 @@ interface ChartConfig {
 }
 
 export function generateChartConfig(includedImports: string[]): ChartConfig {
-  const baseLabel = 'import-'
+  const baseLabel = 'Import '
   const baseColorVar = '--chart-'
 
   return includedImports.reduce((config, key, index) => {

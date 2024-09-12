@@ -13,12 +13,14 @@ start = "python manage.py runserver 0.0.0.0:8000"
 manage  = "python manage.py"
 tests = "pipenv run pytest -v"
 
+
 [packages]
 Django = "*"
 python-dotenv = "*"
 psycopg2-binary ="*"
 pytest-django= "*"
 djangorestframework= "*"
+django-cors-headers = "*"
 
 [requires]
 python_version = "3.10.12"
