@@ -3,9 +3,8 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
-
 [scripts]
-superuser= "python manage.py createsuperuser"
+superuser= "python manage.py createsuperuser --no-input"
 migrate = "python manage.py migrate"
 makemigrations = "python manage.py makemigrations"
 dev = "python manage.py runserver"
@@ -21,6 +20,9 @@ psycopg2-binary ="*"
 pytest-django= "*"
 djangorestframework= "*"
 django-cors-headers = "*"
+django-rest-swagger = "*"
+drf-yasg = "*"
+
 
 [requires]
 python_version = "3.10.12"
