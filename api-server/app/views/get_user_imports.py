@@ -4,6 +4,7 @@ from django.http import Http404
 from django.http import JsonResponse
 from django.core.exceptions import BadRequest
 from rest_framework.decorators import api_view
+from rest_framework import status
 
 
 @api_view(['GET'])
@@ -42,4 +43,4 @@ def get_user_imports(request, user_id):
         
         response_data.append(import_data)
         
-    return JsonResponse(response_data, safe=False, status=200)
+    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
