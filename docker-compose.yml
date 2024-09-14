@@ -2,7 +2,7 @@ version: '3'
 services:
   db:
     container_name: postgres-db
-    image: postgres:16
+    image: postgres:15
     env_file:
       - ./api-server/project/.env
     ports:

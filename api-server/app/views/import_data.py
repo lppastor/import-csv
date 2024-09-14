@@ -1,93 +1,118 @@
-from django.shortcuts import render
-from django.http import Http404
 from django.http import JsonResponse
-from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from ..repository.client import ClientRepository # type: ignore
 from ..repository.csv_data import CsvDataRepository
 import json
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from app.serializers import CsvDataSerializer, ImportDataSerializer
+from rest_framework import status
+from rest_framework.response import Response
 
-# POST CSV DATA R
+
+
+
 @csrf_exempt
+@swagger_auto_schema(
+    method='post',
+    request_body=ImportDataSerializer,  # Definindo o corpo da requisição
+    responses={
+        201: openapi.Response('Insert successfully completed'),
+        404: openapi.Response('Client not found'),
+        400: openapi.Response('Unable to insert csv, please check the information and try again.')
+    }
+)
+@api_view(['POST'])
 def import_data(request):
     if request.method == "POST":
         try:
-            #Data Parse
-            body= json.loads(request.body)
-            client_id= body.get('client_id')
-            import_type = body.get('import_type')
-            data_list = body.get("data")
-
-            client = ClientRepository.get_client_by_id(client_id) # Indentifica o Cliente 
+            serializer = ImportDataSerializer(data=request.data)
             
-            if not client:
-                return JsonResponse({
-                    "error":"Client not found"
-                    },status=404
+            if serializer.is_valid():
+                validate_data = serializer.validated_data
+
+                client_id = validate_data['client_id']
+                import_type = validate_data['import_type']
+                data_list = validate_data['data']
+                client = ClientRepository.get_client_by_id(client_id) # Indentifica o Cliente 
+            
+                if not client:
+                    return JsonResponse({
+                        "error":"Client not found"
+                        },status=status.HTTP_400_BAD_REQUEST
+                        )
+            
+            
+                #Insert em csv_import
+                csv_import = CsvDataRepository.create_csv_import(
+                    client= client,
+                    import_type= import_type
+                )
+            
+                # Insert em Csv_data
+                
+                for data in data_list:
+                    CsvDataRepository.create_csv_data(
+                        csv_import= csv_import,
+                        date_time= data['date'],
+                        balance= data['balance'],
+                        equity= data['equity'],
+                        deposit= data['deposit']
+                        
                     )
                 
-            
-            #Insert em csv_import
-            csv_import = CsvDataRepository.create_csv_import(
-                client= client,
-                import_type= import_type
-            )
-            
-            # Insert em Csv_data
-            
-            for data in data_list:
-                CsvDataRepository.create_csv_data(
-                    csv_import= csv_import,
-                    date_time= data['date'],
-                    balance= data['balance'],
-                    equity= data['equity'],
-                    deposit= data['deposit']
-                    
-                )
+                return JsonResponse({
+                    "status":"Insert successfully completed"
+                },status=status.HTTP_201_CREATED) 
                 
-            return JsonResponse({
-                "status":"Deu bao fi"
-            },status=201)        
+            else:
+                return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         
+      
+
         except Exception as e:
+            print(f"Erro: {str(e)}")
             return JsonResponse({
-                "error":"deu ruim"
-            })
-  
-  
-  
-def get_user_imports(request, user_id):
-    Client= ClientRepository.get_client_by_id(user_id)
-    if not Client:
-        raise Http404('Client not found. Please check the client ID and try again') ## Return error
+                "error": "Unable to insert csv, please check the information and try again.",
+                "details": str(e)  
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter('client', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING),
+        openapi.Parameter('import_id', openapi.IN_QUERY, description="Import ID", type=openapi.TYPE_INTEGER)
+    ]
+)   
+@api_view(['GET'])          
+def get_csv_data(request):
+    client_id = request.GET.get('client')
+    import_id_str = request.GET.get('import_id')
+
+    import_id = int(import_id_str)
+   # Buscar dados que correspondam ao cliente e à importação
+    csv_data = CsvDataRepository.get_csv_data_by_import_id_and_client(import_id, client_id)
+        
+       
+    if not csv_data.exists(): 
+        return JsonResponse({"status": "CSV data not found."}, status=status.HTTP_400_BAD_REQUEST)
+ 
+    csv_list = []
+
     
-    #Busca informações sobre os dados do csv    
-    imports = CsvDataRepository.get_import_by_client(Client)
-    
-    response_data = []
-    for import_obj in imports:
-        csv_data_sumary = CsvDataRepository.get_csv_data_by_import(import_obj)
+    for obj in csv_data:
+        csv_list.append({
+            "csv_import_id": obj.import_id.import_id,
+            "date_time": obj.date_time.isoformat(),  
+            "balance": float(obj.balance),  
+            "equity": float(obj.equity),    
+            "deposit": float(obj.deposit)   
+        })
         
-        if import_obj.type_import  not in [1,2]:
-            type_import = 'unknow'
-        
-        elif import_obj.type_import == 1:
-            type_import_str = 'direct'
-        
-        elif import_obj.type_import == 2:
-            type_import_str =  'indirect'
-        
-        
-        import_data = {
-            "csv_id": import_obj.import_id,
-            "import_type": type_import_str,
-            "created_at": import_obj.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            "balance_sum":csv_data_sumary.get('balance_sum',0),
-            "equity_sum": csv_data_sumary.get("equity_sum",0),
-            "deposit_sum": csv_data_sumary.get("deposit_sum",0),
-            
-        }
-        
-        response_data.append(import_data)
-        
-    return JsonResponse(response_data, safe=False, status=200)
+    # Retornar os dados como JSON com status 200
+    return JsonResponse(csv_list, safe=False, status=status.HTTP_200_OK)
+
