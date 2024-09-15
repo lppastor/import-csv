@@ -1,7 +1,8 @@
 from ..repository.client import ClientRepository
-from rest_framework.decorators import api_view
-from rest_framework import status
 from app.serializers import ClientSerializer
+from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import status
 from rest_framework.response import Response
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
@@ -28,14 +29,25 @@ def Create_client(request):
             return Response({"error":"Passwords do not match, please confirm password and try again"}, status = status.HTTP_400_BAD_REQUEST)
         
         try:
-            ClientRepository.create_user(
+            client = ClientRepository.create_user(
                 first_name = data['first_name'],
                 last_name= data['last_name'],
                 email= data['email'],
                 password= data['password'],
             )
-            return Response({"message":"User created Successfully"}, status = status.HTTP_201_CREATED)
-        
+            refresh = RefreshToken.for_user(client) # Gera token de refresh jwt
+            
+            return Response(
+                {
+                "refresh_token": str(refresh),
+                "access_token": str(refresh.access_token),
+                "message":"User created Successfully",
+             
+
+                
+                }, status = status.HTTP_201_CREATED
+                )
+
             
         except ValidationError as e:
             return Response({"Error":str(e)}, status= status.HTTP_400_BAD_REQUEST)
