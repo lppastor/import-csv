@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv 
+from datetime import timedelta
 load_dotenv() # build .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_yasg',
     'app'
 ]
@@ -123,5 +125,20 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Tempo de expiração do token de acesso
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Tempo de expiração do token de refresh
+    'USER_ID_FIELD': 'client_id',  # Valor padrão que o JWT busca é o campo id, como o nosso é client_id tenho que apontar este
+    'USER_ID_CLAIM': 'client_id',  # O campo que será incluído no payload do JWT
+    'AUTH_HEADER_TYPES': ('Bearer',),  # Tipo do cabeçalho de autenticação
+    
+}
 
 CORS_ORIGIN_ALLOW_ALL = True
