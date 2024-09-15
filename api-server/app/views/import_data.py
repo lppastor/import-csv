@@ -84,7 +84,7 @@ def import_data(request):
 @swagger_auto_schema(
     method='get',
     manual_parameters=[
-        openapi.Parameter('client', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING),
+        openapi.Parameter('client', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING, example="123e4567-e89b-12d3-a456-426614174000"),
         openapi.Parameter('import_id', openapi.IN_QUERY, description="Import ID", type=openapi.TYPE_INTEGER)
     ]
 )   
