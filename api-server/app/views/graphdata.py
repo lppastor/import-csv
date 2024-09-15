@@ -10,7 +10,7 @@ from rest_framework import status
 @swagger_auto_schema(
     method='get',
     manual_parameters=[
-        openapi.Parameter('client_id', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING),
+        openapi.Parameter('client_id', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING,example="123e4567-e89b-12d3-a456-426614174000"),
         openapi.Parameter('import_ids', openapi.IN_QUERY, description="Import IDs (comma-separated)", type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER))
     ]
 )
@@ -20,7 +20,7 @@ def get_balance_summary(request):
     import_ids= request.GET.get('import_ids')
     
     if not import_ids:
-        return JsonResponse({"error": "Client not found"}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"error": "Imports not found"}, status=status.HTTP_400_BAD_REQUEST)
 
     import_ids= import_ids.split(',')
 
@@ -35,4 +35,4 @@ def get_balance_summary(request):
     # Agrupa por mês e por import_id, somando os valores de balance
     response_data = CsvDataRepository.get_monthly_balance_summary(csv_data)
 
-    return JsonResponse(response_data, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
