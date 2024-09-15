@@ -22,7 +22,7 @@ djangorestframework= "*"
 django-cors-headers = "*"
 django-rest-swagger = "*"
 drf-yasg = "*"
-
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.10.12"
