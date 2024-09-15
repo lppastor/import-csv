@@ -1,5 +1,5 @@
 from ..repository.client import ClientRepository
-from app.serializers import ClientSerializer
+from app.serializers import ClientSerializer,ClientLoginSerializer
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-@csrf_exempt
 @swagger_auto_schema(
     method='post',
     request_body=ClientSerializer,  # Definindo o corpo da requisição
@@ -54,6 +53,34 @@ def Create_client(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+@swagger_auto_schema(
+    method='post',
+    request_body=ClientLoginSerializer,  # Definindo o corpo da requisição
+    responses={
+        200: openapi.Response('Login succesfully'),
+        400: openapi.Response('Invalid user')
+    }
+)
+@api_view(['POST'])
+def ClientLogin(requests):
+    serializer= ClientLoginSerializer(data= requests.data)
+
+    if serializer.is_valid():
+        try:
+            tokens= ClientRepository.login(
+                email=serializer.validated_data['email'],  
+                password=serializer.validated_data['password'] 
+            )
+            
+            return Response(tokens, status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
             
             
