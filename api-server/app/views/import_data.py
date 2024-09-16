@@ -3,7 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from ..repository.client import ClientRepository # type: ignore
 from ..repository.csv_data import CsvDataRepository
 import json
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from app.serializers import CsvDataSerializer, ImportDataSerializer
@@ -13,10 +14,17 @@ from rest_framework.response import Response
 
 
 
-@csrf_exempt
 @swagger_auto_schema(
     method='post',
     request_body=ImportDataSerializer,  # Definindo o corpo da requisição
+    manual_parameters=[
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description="Token JWT no formato Bearer <token>",
+            type=openapi.TYPE_STRING
+        )
+    ],
     responses={
         201: openapi.Response('Insert successfully completed'),
         404: openapi.Response('Client not found'),
@@ -24,6 +32,7 @@ from rest_framework.response import Response
     }
 )
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def import_data(request):
     if request.method == "POST":
         try:
@@ -32,17 +41,16 @@ def import_data(request):
             if serializer.is_valid():
                 validate_data = serializer.validated_data
 
-                client_id = validate_data['client_id']
-                import_type = validate_data['import_type']
-                data_list = validate_data['data']
-                client = ClientRepository.get_client_by_id(client_id) # Indentifica o Cliente 
-            
+                client= request.user #Indentifica o cliente em meu token
+        
                 if not client:
                     return JsonResponse({
                         "error":"Client not found"
                         },status=status.HTTP_400_BAD_REQUEST
                         )
-            
+                
+                import_type = validate_data['import_type']
+                data_list = validate_data['data']        
             
                 #Insert em csv_import
                 csv_import = CsvDataRepository.create_csv_import(
