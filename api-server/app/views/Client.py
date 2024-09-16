@@ -1,5 +1,6 @@
 from ..repository.client import ClientRepository
 from app.serializers import ClientSerializer,ClientLoginSerializer
+from ..models.client import Client
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
@@ -25,10 +26,7 @@ def Create_client(request):
     serializer = ClientSerializer(data = request.data)
 
     if serializer.is_valid():
-        data = serializer.validated_data
-        
-        if data['password'] != data['password_confirm']:
-            return Response({"error":"Passwords do not match, please confirm password and try again"}, status = status.HTTP_400_BAD_REQUEST)
+        data = serializer.validated_data        
         
         try:
             client = ClientRepository.create_user(
@@ -80,8 +78,15 @@ def ClientLogin(requests):
             )
             
             return Response(tokens, status=status.HTTP_200_OK)
+        
+        except Client.DoesNotExist:
+            # Caso o usuário não seja encontrado no banco de dados
+            return Response({"error": "Invalid email or password. Please try again."}, status=status.HTTP_404_NOT_FOUND)
+        
         except ValueError as e:
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
