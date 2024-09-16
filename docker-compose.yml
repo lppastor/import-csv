@@ -4,7 +4,7 @@ services:
     container_name: postgres-db
     image: postgres:15
     env_file:
-      - ./api/project/.env
+      - ./api/.env
     ports:
       - '5432:5432'
     volumes:
@@ -21,13 +21,17 @@ services:
     depends_on:
       - db
     env_file:
-      - ./api/project/.env
+      - ./api/.env
     entrypoint: /app/entrypoint.sh
     command: pipenv run manage runserver 0.0.0.0:8000
 
   web:
     image: node:20-alpine
     working_dir: /app
+    depends_on:
+      - api
+    env_file:
+      - ./web/.env
     volumes:
       - ./web:/app
     ports:
