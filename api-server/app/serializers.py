@@ -10,6 +10,7 @@ class CsvDataSerializer(serializers.Serializer):
     deposit = serializers.FloatField(required=True)
 
 class ImportDataSerializer(serializers.Serializer):
+    import_name= serializers.IntegerField(required= True)
     import_type = serializers.IntegerField(required=True)
     data = CsvDataSerializer(many=True,required=True)
     
