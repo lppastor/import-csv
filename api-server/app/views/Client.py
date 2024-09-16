@@ -4,8 +4,10 @@ from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, permission_classes
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -18,6 +20,7 @@ from drf_yasg import openapi
     }
 )
 @api_view(['post'])
+@permission_classes([AllowAny])
 def Create_client(request):
     serializer = ClientSerializer(data = request.data)
 
