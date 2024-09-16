@@ -42,7 +42,7 @@ class ClientRepository:
         )
         
         if not user:
-            return Response({"message": "Invalid credentials"}, status= status.HTTP_400_BAD_REQUEST)
+            raise ValueError("Invalid credentials")
 
         refresh= RefreshToken.for_user(user)
         return {
