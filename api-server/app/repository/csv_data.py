@@ -8,8 +8,9 @@ from django.db.models.functions import TruncMonth
 class CsvDataRepository:
     
     @classmethod    
-    def create_csv_import(cls, client, import_type):
+    def create_csv_import(cls, client, import_type,import_name):
         return CsvImport.objects.create(
+            import_name= int(import_name),
             client=client,
             type_import= import_type
         )
@@ -18,21 +19,25 @@ class CsvDataRepository:
     @classmethod
     def create_csv_data(cls,csv_import, date_time, balance, equity, deposit):
         return CsvData.objects.create(
-            import_id= csv_import,
+            import_name= csv_import,
             date_time= date_time,
             balance= balance,
             equity= equity,
             deposit= deposit 
         )
     
-    
     @classmethod
     def get_import_by_client(cls,client):
         return CsvImport.objects.filter(client=client)
+    
+    @classmethod
+    def import_id_exists(cls,import_name, client):
+        return CsvImport.objects.filter(import_name=import_name, client=client).exists()
 
+    
     @classmethod
     def get_csv_data_by_import(cls, import_obj):
-        return CsvData.objects.filter(import_id=import_obj).aggregate(
+        return CsvData.objects.filter(import_name=import_obj).aggregate(
             balance_sum= Sum('balance'),
             equity_sum= Sum('equity'),
             deposit_sum= Sum('deposit'),
@@ -40,14 +45,14 @@ class CsvDataRepository:
         )
     
     @classmethod
-    def  get_csv_data_by_import_ids_and_client(cls, import_ids, client):
+    def  get_csv_data_by_import_id_and_client(cls, import_name, client):
         """Filtra os dados do csv com base nos ids importados"""
-        return CsvData.objects.filter(import_id__in=import_ids, import_id__client= client)   
+        return CsvData.objects.filter(import_id__import_name=import_name, import_id__client=client)   
 
     @classmethod
-    def get_csv_data_by_import_id_and_client(cls, import_id, client):
+    def get_csv_data_by_import_name_and_client(cls, import_name, client):
         """Filtra os dados do csv com base no id importado e no cliente."""
-        return CsvData.objects.filter(import_id=import_id, import_id__client=client)
+        return CsvData.objects.filter(import_name__import_name__in=import_name, import_name__client=client)
         
     @classmethod
     def get_monthly_balance_summary(cls, csv_data):
@@ -55,23 +60,23 @@ class CsvDataRepository:
         balance_sumary= csv_data.annotate(
             month= TruncMonth("date_time")
         ).values(
-            'month','import_id'
+            'month','import_name__import_name'
         ).annotate(
             total_balance= Sum('balance')
         ).order_by('month')
 
         #Extrar id dos imports
-        import_ids= csv_data.values_list('import_id', flat=True).distinct()
+        import_names= csv_data.values_list('import_name__import_name', flat=True).distinct()
         
         response_data = {}
         for entry in balance_sumary:
             month= entry['month'].strftime('%Y-%m')
-            import_id= entry['import_id']
+            import_name= entry['import_name__import_name']
             
             if month not in response_data:
-                response_data[month]= {f'Import {i}':0 for i in import_ids}
+                response_data[month]= {f'Import {i}':0 for i in import_names}
             
-            response_data[month][f'Import {import_id}']= entry['total_balance']
+            response_data[month][f'Import {import_name}']= entry['total_balance']
             
         # Converter para lista de json
         formatted_response= []
