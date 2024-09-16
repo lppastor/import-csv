@@ -5,5 +5,6 @@
 
 pip install pipenv &&
         pipenv --python /usr/local/bin/python install --deploy --ignore-pipfile &&
-        pipenv --python /usr/local/bin/python run manage migrate && 
+        pipenv --python /usr/local/bin/python run manage migrate &&
+        pipenv --python /usr/local/bin/python run superuser &&
         exec $@
