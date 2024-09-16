@@ -36,10 +36,10 @@ from rest_framework.response import Response
 def import_data(request):
     if request.method == "POST":
         try:
-            serializer = ImportDataSerializer(data=request.data)
+            serializer= ImportDataSerializer(data=request.data)
             
             if serializer.is_valid():
-                validate_data = serializer.validated_data
+                validate_data= serializer.validated_data
 
                 client= request.user #Indentifica o cliente em meu token
         
@@ -48,14 +48,26 @@ def import_data(request):
                         "error":"Client not found"
                         },status=status.HTTP_400_BAD_REQUEST
                         )
+                    
+                import_name= validate_data['import_name']
+                import_type= validate_data['import_type']
+                data_list= validate_data['data']        
+
+                if CsvDataRepository.import_id_exists(import_name, client):
+                    return Response({
+                        "error": "This import_name already exists"
+                    }, status= status.HTTP_400_BAD_REQUEST)
                 
-                import_type = validate_data['import_type']
-                data_list = validate_data['data']        
-            
+                if import_type not in [1,2]:
+                    return Response({
+                        "error": "Type import invalid, please check and try again"
+                    }, status= status.HTTP_400_BAD_REQUEST)
+                
                 #Insert em csv_import
                 csv_import = CsvDataRepository.create_csv_import(
                     client= client,
-                    import_type= import_type
+                    import_type= import_type,
+                    import_name= import_name,
                 )
             
                 # Insert em Csv_data
