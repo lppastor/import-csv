@@ -18,7 +18,7 @@ from rest_framework import status
             type= openapi.TYPE_STRING
         ),
         openapi.Parameter(
-            'import_ids',
+            'import_name',
             openapi.IN_QUERY,
             description= "Import IDs (comma-separated)",
             type= openapi.TYPE_ARRAY,
@@ -29,18 +29,18 @@ from rest_framework import status
 @permission_classes([IsAuthenticated])
 def get_balance_summary(request):
     client= request.user
-    import_ids = request.GET.get('import_ids')
-    if not import_ids:
+    import_name = request.GET.get('import_name')
+    if not import_name:
         return JsonResponse({"error": "Imports not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-    import_ids= import_ids.split(',')
+    import_name= import_name.split(',')
 
     # Obtém o cliente pelo ID usando o ClientRepository
     if not client:
         return JsonResponse({"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    # Filtra os dados CSV com base no client_id e nos import_ids fornecidos.
-    csv_data = CsvDataRepository.get_csv_data_by_import_ids_and_client(import_ids, client)
+    # Filtra os dados CSV com base no client_id e nos import_name fornecidos.
+    csv_data = CsvDataRepository.get_csv_data_by_import_name_and_client(import_name, client)
 
     # Agrupa por mês e por import_id, somando os valores de balance
     response_data = CsvDataRepository.get_monthly_balance_summary(csv_data)
