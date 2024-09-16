@@ -91,19 +91,30 @@ def import_data(request):
 
 @swagger_auto_schema(
     method='get',
-    manual_parameters=[
-        openapi.Parameter('client', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING, example="123e4567-e89b-12d3-a456-426614174000"),
-        openapi.Parameter('import_id', openapi.IN_QUERY, description="Import ID", type=openapi.TYPE_INTEGER)
+    manual_parameters= [
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description= "Token JWT no formato Bearer <token>",
+            type= openapi.TYPE_STRING
+        ),
+        openapi.Parameter(
+            'import_id', 
+            openapi.IN_QUERY, 
+            description= "Import ID", 
+            type= openapi.TYPE_INTEGER
+        )
     ]
 )   
-@api_view(['GET'])          
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])        
 def get_csv_data(request):
-    client_id = request.GET.get('client')
+    client= request.user
     import_id_str = request.GET.get('import_id')
 
     import_id = int(import_id_str)
    # Buscar dados que correspondam ao cliente e à importação
-    csv_data = CsvDataRepository.get_csv_data_by_import_id_and_client(import_id, client_id)
+    csv_data = CsvDataRepository.get_csv_data_by_import_id_and_client(import_id, client)
         
        
     if not csv_data.exists(): 
