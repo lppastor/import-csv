@@ -1,3 +1,44 @@
+# Setup
+
+## Sem docker
+
+### API
+
+> Antes de rodar a API, suba um banco de dados PostgreSQL.
+
+Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta `api`, seguindo o exemplo do arquivo [`.env.example`](api/.env.example).
+
+Rode o comando `pipenv install` para instalar as dependências.
+
+Rode o comando `pipenv run migrate` para criar as tabelas no banco de dados.
+
+Rode o comando `pipenv run superuser` para criar um super usuário, baseado nas informações do arquivo `.env`.
+
+Rode o comando `pipenv run start` para iniciar o servidor.
+
+Seu servidor vai estar disponível em http://localhost:8000.
+
+### Frontend Web
+
+> Antes de rodar o frontend, suba a API.
+
+Rode o comando `pnpm install` para instalar as dependências.
+
+Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta `web`, seguindo o exemplo do arquivo [`.env.example`](web/.env.example).
+
+Rode o comando `pnpm run dev` para iniciar o servidor de desenvolvimento.
+
+Seu servidor vai estar disponível em http://localhost:3000.
+
+Ou rode o comando `pnpm run build` para gerar a build de produção, e `pnpm run start` para iniciar o servidor de produção.
+
+## Com docker
+
+Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta raiz do repositório, seguindo o exemplo do arquivo [`.env.example`](.env.example).
+
+Rode o comando `docker-compose up` para iniciar o servidor.
+
+
 # Project scope
 
 ## Login page
