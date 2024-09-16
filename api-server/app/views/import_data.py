@@ -111,9 +111,9 @@ def import_data(request):
             type= openapi.TYPE_STRING
         ),
         openapi.Parameter(
-            'import_id', 
+            'import_name', 
             openapi.IN_QUERY, 
-            description= "Import ID", 
+            description= "Import name", 
             type= openapi.TYPE_INTEGER
         )
     ]
@@ -122,11 +122,14 @@ def import_data(request):
 @permission_classes([IsAuthenticated])        
 def get_csv_data(request):
     client= request.user
-    import_id_str = request.GET.get('import_id')
+    import_name_str = request.GET.get('import_name')
 
-    import_id = int(import_id_str)
+    if import_name_str is None:
+        return JsonResponse({"error": "Import name not provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    import_name = int(import_name_str)
    # Buscar dados que correspondam ao cliente e à importação
-    csv_data = CsvDataRepository.get_csv_data_by_import_id_and_client(import_id, client)
+    csv_data = CsvDataRepository.get_csv_data_by_import_name_and_client(import_name, client)
         
        
     if not csv_data.exists(): 
@@ -137,7 +140,7 @@ def get_csv_data(request):
     
     for obj in csv_data:
         csv_list.append({
-            "csv_import_id": obj.import_id.import_id,
+            "csv_import_name": obj.import_name.import_name,
             "date_time": obj.date_time.isoformat(),  
             "balance": float(obj.balance),  
             "equity": float(obj.equity),    

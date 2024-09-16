@@ -44,14 +44,13 @@ class CsvDataRepository:
             data_lines=Count('csv_id')
         )
     
-    @classmethod
-    def  get_csv_data_by_import_id_and_client(cls, import_name, client):
-        """Filtra os dados do csv com base nos ids importados"""
-        return CsvData.objects.filter(import_id__import_name=import_name, import_id__client=client)   
 
     @classmethod
     def get_csv_data_by_import_name_and_client(cls, import_name, client):
-        """Filtra os dados do csv com base no id importado e no cliente."""
+        if not isinstance(import_name, list):
+            import_name = [import_name]
+    
+        # Realiza a filtragem com base no nome de importação e no cliente
         return CsvData.objects.filter(import_name__import_name__in=import_name, import_name__client=client)
         
     @classmethod
