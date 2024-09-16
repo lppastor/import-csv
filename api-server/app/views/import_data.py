@@ -3,7 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from ..repository.client import ClientRepository # type: ignore
 from ..repository.csv_data import CsvDataRepository
 import json
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from app.serializers import CsvDataSerializer, ImportDataSerializer
@@ -13,10 +14,17 @@ from rest_framework.response import Response
 
 
 
-@csrf_exempt
 @swagger_auto_schema(
     method='post',
     request_body=ImportDataSerializer,  # Definindo o corpo da requisição
+    manual_parameters=[
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description="Token JWT no formato Bearer <token>",
+            type=openapi.TYPE_STRING
+        )
+    ],
     responses={
         201: openapi.Response('Insert successfully completed'),
         404: openapi.Response('Client not found'),
@@ -24,30 +32,42 @@ from rest_framework.response import Response
     }
 )
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def import_data(request):
     if request.method == "POST":
         try:
-            serializer = ImportDataSerializer(data=request.data)
+            serializer= ImportDataSerializer(data=request.data)
             
             if serializer.is_valid():
-                validate_data = serializer.validated_data
+                validate_data= serializer.validated_data
 
-                client_id = validate_data['client_id']
-                import_type = validate_data['import_type']
-                data_list = validate_data['data']
-                client = ClientRepository.get_client_by_id(client_id) # Indentifica o Cliente 
-            
+                client= request.user #Indentifica o cliente em meu token
+        
                 if not client:
                     return JsonResponse({
                         "error":"Client not found"
                         },status=status.HTTP_400_BAD_REQUEST
                         )
-            
-            
+                    
+                import_name= validate_data['import_name']
+                import_type= validate_data['import_type']
+                data_list= validate_data['data']        
+
+                if CsvDataRepository.import_id_exists(import_name, client):
+                    return Response({
+                        "error": "This import_name already exists"
+                    }, status= status.HTTP_400_BAD_REQUEST)
+                
+                if import_type not in [1,2]:
+                    return Response({
+                        "error": "Type import invalid, please check and try again"
+                    }, status= status.HTTP_400_BAD_REQUEST)
+                
                 #Insert em csv_import
                 csv_import = CsvDataRepository.create_csv_import(
                     client= client,
-                    import_type= import_type
+                    import_type= import_type,
+                    import_name= import_name,
                 )
             
                 # Insert em Csv_data
@@ -83,19 +103,33 @@ def import_data(request):
 
 @swagger_auto_schema(
     method='get',
-    manual_parameters=[
-        openapi.Parameter('client', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING),
-        openapi.Parameter('import_id', openapi.IN_QUERY, description="Import ID", type=openapi.TYPE_INTEGER)
+    manual_parameters= [
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description= "Token JWT no formato Bearer <token>",
+            type= openapi.TYPE_STRING
+        ),
+        openapi.Parameter(
+            'import_name', 
+            openapi.IN_QUERY, 
+            description= "Import name", 
+            type= openapi.TYPE_INTEGER
+        )
     ]
 )   
-@api_view(['GET'])          
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])        
 def get_csv_data(request):
-    client_id = request.GET.get('client')
-    import_id_str = request.GET.get('import_id')
+    client= request.user
+    import_name_str = request.GET.get('import_name')
 
-    import_id = int(import_id_str)
+    if import_name_str is None:
+        return JsonResponse({"error": "Import name not provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    import_name = int(import_name_str)
    # Buscar dados que correspondam ao cliente e à importação
-    csv_data = CsvDataRepository.get_csv_data_by_import_id_and_client(import_id, client_id)
+    csv_data = CsvDataRepository.get_csv_data_by_import_name_and_client(import_name, client)
         
        
     if not csv_data.exists(): 
@@ -106,7 +140,7 @@ def get_csv_data(request):
     
     for obj in csv_data:
         csv_list.append({
-            "csv_import_id": obj.import_id.import_id,
+            "csv_import_name": obj.import_name.import_name,
             "date_time": obj.date_time.isoformat(),  
             "balance": float(obj.balance),  
             "equity": float(obj.equity),    
