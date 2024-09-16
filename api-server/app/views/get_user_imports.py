@@ -51,17 +51,16 @@ def get_user_imports(request):
             type_import_str =  'indirect'
         
         
-        import_data = [
-            {
+        import_data = {
             "csv_id": import_obj.import_id,
             "import_type": type_import_str,
             "created_at": import_obj.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             "balance_sum":csv_data_sumary.get('balance_sum',0),
             "equity_sum": csv_data_sumary.get("equity_sum",0),
             "deposit_sum": csv_data_sumary.get("deposit_sum",0),
-            }
-        ]
+        }
         
+    
         response_data.append(import_data)
         
     return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
