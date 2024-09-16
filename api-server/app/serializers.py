@@ -19,7 +19,6 @@ class ClientSerializer(serializers.Serializer):
     last_name = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only = True, required=True)
-    password_confirm = serializers.CharField(write_only = True, required = True)
     
     
 class ClientLoginSerializer(serializers.Serializer):
