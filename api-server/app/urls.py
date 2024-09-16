@@ -6,7 +6,7 @@ from .views.Client import Create_client, ClientLogin
 
 urlpatterns = [
     path("import-data/", import_data, name="import_data"),
-    path('user-imports/<str:user_id>/', get_user_imports, name='user_imports'),
+    path('user-imports/', get_user_imports, name='user_imports'),
     path('graph-data/', get_balance_summary, name='graph-data'),
     path('csv-data/', get_csv_data, name='csv-data'),
     path('client/register_client/', Create_client, name="Register Client"),
