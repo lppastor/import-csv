@@ -1,7 +1,8 @@
 from django.http import JsonResponse
 from app.repository.client import ClientRepository
 from app.repository.csv_data import CsvDataRepository
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
+from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework import status
@@ -10,22 +11,31 @@ from rest_framework import status
 @swagger_auto_schema(
     method='get',
     manual_parameters=[
-        openapi.Parameter('client_id', openapi.IN_QUERY, description="Client ID", type=openapi.TYPE_STRING,example="123e4567-e89b-12d3-a456-426614174000"),
-        openapi.Parameter('import_ids', openapi.IN_QUERY, description="Import IDs (comma-separated)", type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER))
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description= "Token JWT no formato Bearer <token>",
+            type= openapi.TYPE_STRING
+        ),
+        openapi.Parameter(
+            'import_ids',
+            openapi.IN_QUERY,
+            description= "Import IDs (comma-separated)",
+            type= openapi.TYPE_ARRAY,
+            items= openapi.Items(type=openapi.TYPE_INTEGER))
     ]
 )
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_balance_summary(request):
-    client_id = request.GET.get('client_id')
-    import_ids= request.GET.get('import_ids')
-    
+    client= request.user
+    import_ids = request.GET.get('import_ids')
     if not import_ids:
         return JsonResponse({"error": "Imports not found"}, status=status.HTTP_400_BAD_REQUEST)
 
     import_ids= import_ids.split(',')
 
     # Obtém o cliente pelo ID usando o ClientRepository
-    client = ClientRepository.get_client_by_id(client_id)
     if not client:
         return JsonResponse({"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
 
