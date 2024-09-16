@@ -3,18 +3,39 @@ from ..repository.client import ClientRepository
 from django.http import Http404
 from django.http import JsonResponse
 from django.core.exceptions import BadRequest
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
-
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            'Authorization',  
+            openapi.IN_HEADER,  
+            description="Token JWT no formato: Bearer <token>",
+            type=openapi.TYPE_STRING
+        )
+    ],
+    responses={
+        200: 'Sucesso',
+        401: 'Não autorizado, token inválido ou ausente'
+    }
+)
 @api_view(['GET'])
-def get_user_imports(request, user_id):
-    Client= ClientRepository.get_client_by_id(user_id)
-    if not Client:
+@permission_classes([AllowAny])  # Pode realizar requisição sem estar autenticado 
+def get_user_imports(request):
+    
+    if not request.user or request.user.is_anonymous:
         raise BadRequest('Client not found. Please check the client ID and try again') ## Return error
     
+    
+    client= request.user
+
     #Busca informações sobre os dados do csv    
-    imports = CsvDataRepository.get_import_by_client(Client)
+    imports = CsvDataRepository.get_import_by_client(client)
     
     response_data = []
     for import_obj in imports:
