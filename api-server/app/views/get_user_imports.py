@@ -41,10 +41,8 @@ def get_user_imports(request):
     for import_obj in imports:
         csv_data_sumary = CsvDataRepository.get_csv_data_by_import(import_obj)
         
-        if import_obj.type_import  not in [1,2]:
-            type_import = 'unknow'
         
-        elif import_obj.type_import == 1:
+        if import_obj.type_import == 1:
             type_import_str = 'direct'
         
         elif import_obj.type_import == 2:
@@ -52,7 +50,7 @@ def get_user_imports(request):
         
         
         import_data = {
-            "csv_id": import_obj.import_id,
+            "import_name": import_obj.import_name,
             "import_type": type_import_str,
             "created_at": import_obj.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             "balance_sum":csv_data_sumary.get('balance_sum',0),
