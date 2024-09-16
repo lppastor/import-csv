@@ -68,6 +68,7 @@ def Create_client(request):
     }
 )
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def ClientLogin(requests):
     serializer= ClientLoginSerializer(data= requests.data)
 
