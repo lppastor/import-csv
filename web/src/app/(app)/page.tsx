@@ -41,8 +41,8 @@ export default function Home() {
     setLoadingImports(true)
     fetchCSVImports().then((data) => {
       setImports(data)
-      setLoadingImports(false)
     })
+    setLoadingImports(false)
   }
 
   function getTokens(csvImport: CSVImportReturn): string {
