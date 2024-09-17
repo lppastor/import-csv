@@ -1,8 +1,4 @@
-interface CSVImport {
-  id: number // serial
-  import_type: 'direct' | 'indirect'
-  created_at: string // ISO8601
-}
+import { env } from '~/env'
 
 interface CSVData {
   csv_import_id: number // serial
@@ -98,7 +94,7 @@ type CsvResponse = {
 
 export async function fetchCSVImports(): Promise<CSVImportReturn[]> {
   const data: CsvResponse[] = await fetch(
-    'http://localhost:8000/app/user-imports/007f0a12-3b15-4fe6-ab3f-e09ddb7386aa/'
+    `${env.API_URL}/app/user-imports/007f0a12-3b15-4fe6-ab3f-e09ddb7386aa/`
   ).then((res) => res.json())
 
   return data.map((csvImport) => ({
