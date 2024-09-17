@@ -2,6 +2,7 @@
 
 import { CloudUpload, Loader2 } from 'lucide-react'
 import { ChangeEvent, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import Papa from 'papaparse'
 
 import { Card } from '~/components/import-card'
@@ -19,7 +20,7 @@ import {
 import { CSVImportReturn, fetchCSVImports } from '~/lib/fake-data'
 
 import { CSVLine } from '~/types'
-import { toast } from 'sonner'
+import { env } from '~/env'
 
 type ImportType = 'direct' | 'indirect'
 
@@ -100,7 +101,7 @@ export default function Home() {
       data: csvImportData.map(remadeCsvLine),
     }
 
-    await fetch('http://localhost:8000/app/import-data/', {
+    await fetch(`${env.API_URL}/app/import-data/`, {
       method: 'POST',
       body: JSON.stringify(importPayload),
       mode: 'cors',

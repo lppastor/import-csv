@@ -1,13 +1,15 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+
+import { env } from '~/env'
+import { fetchCSVImports } from '~/lib/fake-data'
 import { Label } from '~/components/ui/label'
 
 import { MyChart } from './my-chart'
 import { ImportFilter } from './import-filter'
 import { ImportData } from './chart-data'
-import { useEffect, useState } from 'react'
-import { Loader2 } from 'lucide-react'
-import { fetchCSVImports } from '~/lib/fake-data'
 
 export default function GraphPage() {
   const [includedImports, setIncludedImports] = useState<string[]>([])
@@ -27,7 +29,9 @@ export default function GraphPage() {
 
     const importList = (await fetchCSVImports()).map((item) => item.id)
     const chartData: ImportData[] = await fetch(
-      `http://localhost:8000/app/graph-data/?client_id=007f0a12-3b15-4fe6-ab3f-e09ddb7386aa&import_ids=${importList.join(
+      `${
+        env.API_URL
+      }/app/graph-data/?client_id=007f0a12-3b15-4fe6-ab3f-e09ddb7386aa&import_ids=${importList.join(
         ','
       )}`
     ).then((res) => res.json())
