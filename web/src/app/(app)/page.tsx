@@ -21,6 +21,7 @@ import { CSVImportReturn, fetchCSVImports } from '~/lib/fake-data'
 
 import { CSVLine } from '~/types'
 import { env } from '~/env'
+import { api } from '~/lib/api'
 
 type ImportType = 'direct' | 'indirect'
 
@@ -96,16 +97,13 @@ export default function Home() {
     }
 
     const importPayload = {
-      client_id: '007f0a12-3b15-4fe6-ab3f-e09ddb7386aa',
+      import_name: importNumber,
       import_type: importTypes === 'direct' ? 1 : 2,
       data: csvImportData.map(remadeCsvLine),
     }
 
-    await fetch(`${env.API_URL}/app/import-data/`, {
-      method: 'POST',
-      body: JSON.stringify(importPayload),
-      mode: 'cors',
-    })
+    await api
+      .post('/import-data/', importPayload)
       .then((response) => {
         response.status === 201 && toast.success('Importado com sucesso')
       })

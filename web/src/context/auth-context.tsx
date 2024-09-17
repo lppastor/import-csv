@@ -10,6 +10,7 @@ import {
 import Cookies from 'js-cookie'
 
 import { api } from '~/lib/api'
+import { AxiosError } from 'axios'
 
 type User = {
   first_name: string
@@ -31,14 +32,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const token = Cookies.get('token')
 
+    console.log('LOG | On AuthProvider useEffect | token: ', token)
+
     if (token) {
       api
         .get('/client/me')
         .then((response) => {
           setUser(response.data)
         })
-        .catch(() => {
-          Cookies.remove('token')
+        .catch((err: AxiosError) => {
+          console.error(
+            'ERR | On AuthProvider useEffect | catch | token: ',
+            token
+          )
+          console.error(err.message)
+          console.log('<### REMOÇÃO DE COOKIES ###>')
+          // Cookies.remove('token')
         })
     }
   })
@@ -51,10 +60,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { access } = response.data
 
+    console.log('LOG | On AuthProvider login | access: ', access)
+
     Cookies.set('token', access)
 
     const userResponse = await api.get<User>('/client/me/')
     setUser(userResponse.data)
+
+    console.log(
+      'LOG | On AuthProvider login | userResponse.data: ',
+      userResponse.data.email
+    )
   }
 
   const logout = () => {
