@@ -57,6 +57,13 @@ class ClientRepository:
         try:
             return Client.objects.get(client_id=client_id)
         except Client.DoesNotExist:
+            return None
+          
+    @classmethod    
+    def get_client_by_email(cls, email):
+        try:
+            return Client.objects.get(email=email)
+        except Client.DoesNotExist:
             return None  
         
     
