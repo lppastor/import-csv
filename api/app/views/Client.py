@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
@@ -89,6 +89,25 @@ def ClientLogin(requests):
         
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters= [
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description= "Token JWT no formato Bearer <token>",
+            type= openapi.TYPE_STRING
+        ),
+    ]
+)   
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_client(request):
+    client = ClientRepository.get_client_by_email(request.user)
+    serializer = ClientSerializer(client)
+    return Response(serializer.data) 
     
 
             
