@@ -207,7 +207,7 @@ export default function Home() {
         {imports.length > 0 && !loadingImports && (
           <div className='grid grid-cols-1 justify-center md:justify-start md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8'>
             {filterImports(imports)
-              .reverse()
+              .sort((a, b) => b.import_name - a.import_name)
               .map((importData) => (
                 <Card key={importData.import_name} importData={importData} />
               ))}
