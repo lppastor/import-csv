@@ -5,6 +5,14 @@ export type CSVLine = {
   '<EQUITY>': string // "10000.00",
 }
 
+export type CsvData = {
+  csv_import_name: number
+  date_time: string
+  balance: number
+  equity: number
+  deposit: number
+}
+
 export type CsvImportMetadata = {
   import_name: number
   import_type: 'direct' | 'indirect'

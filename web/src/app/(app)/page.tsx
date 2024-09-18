@@ -28,7 +28,6 @@ export default function Home() {
   const [importTypes, setImportTypes] = useState<ImportType>()
   const [importNumber, setImportNumber] = useState<number>()
 
-  const [showImportTableModal, setShowImportTableModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   const [loading, setLoading] = useState(false)
@@ -209,16 +208,14 @@ export default function Home() {
             {filterImports(imports)
               .sort((a, b) => b.import_name - a.import_name)
               .map((importData) => (
-                <Card key={importData.import_name} importData={importData} />
+                <Card
+                  key={importData.import_name}
+                  csvImportMetadata={importData}
+                />
               ))}
           </div>
         )}
       </div>
-      <ImportTable
-        data={csvImportData as CSVLine[]}
-        show={showImportTableModal && csvImportData != undefined}
-        onClose={() => setShowImportTableModal(false)}
-      />
     </div>
   )
 }
