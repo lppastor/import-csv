@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -25,10 +26,14 @@ import {
   FormLabel,
   FormMessage,
 } from '~/components/ui/form'
+import { useAuth } from '~/context/auth-context'
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
+
+  const { register } = useAuth()
+  const router = useRouter()
 
   const loginFormSchema = z.object({
     first_name: z
@@ -55,9 +60,15 @@ export default function RegisterPage() {
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true)
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+    await register(values)
+      .then(() => {
+        router.push('/')
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+
+    setIsLoading(false)
   }
 
   return (

@@ -11,6 +11,7 @@ import Cookies from 'js-cookie'
 
 import { api } from '~/lib/api'
 import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 
 type User = {
   first_name: string
@@ -18,9 +19,17 @@ type User = {
   email: string
 }
 
+type RegisterData = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+}
+
 type AuthContextType = {
   user: User | null
   login: (email: string, password: string) => Promise<void>
+  register: (data: RegisterData) => Promise<void>
   logout: () => void
 }
 
@@ -60,13 +69,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(userResponse.data)
   }
 
+  const register = async (data: RegisterData) => {
+    try {
+      const response = await api.post<{ access_token: string }>(
+        '/client/register_client/',
+        data
+      )
+
+      if (response.status === 201) {
+        const { access_token } = response.data
+
+        Cookies.set('token', access_token)
+
+        const userResponse = await api.get<User>('/client/me/')
+
+        setUser(userResponse.data)
+      } else {
+        toast.error(`Erro ao registrar usuário: ${response.statusText}`)
+        throw new Error(
+          `Erro ao registrar usuário | ${response.statusText} | ${response.data}`
+        )
+      }
+    } catch (err) {
+      toast.error('Erro ao registrar usuário')
+      throw err
+    }
+  }
+
   const logout = () => {
     Cookies.remove('token')
     setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   )
