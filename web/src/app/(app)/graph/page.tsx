@@ -8,7 +8,7 @@ import { CsvImportMetadata } from '~/types'
 
 import { Label } from '~/components/ui/label'
 
-import { Chart } from './chart
+import { Chart } from './chart'
 import { ImportFilter } from './import-filter'
 import { ImportData } from './chart-data'
 
