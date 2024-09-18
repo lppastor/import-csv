@@ -17,10 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
-import { CSVImportReturn, fetchCSVImports } from '~/lib/fake-data'
 
-import { CSVLine } from '~/types'
-import { env } from '~/env'
+import { CSVLine, CsvImportMetadata } from '~/types'
+import { api } from '~/lib/api'
 
 type ImportType = 'direct' | 'indirect'
 
@@ -29,25 +28,27 @@ export default function Home() {
   const [importTypes, setImportTypes] = useState<ImportType>()
   const [importNumber, setImportNumber] = useState<number>()
 
-  const [showImportTableModal, setShowImportTableModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   const [loading, setLoading] = useState(false)
 
-  const [imports, setImports] = useState<CSVImportReturn[]>([])
+  const [imports, setImports] = useState<CsvImportMetadata[]>([])
   const [loadingImports, setLoadingImports] = useState(true)
 
-  function fetchImports() {
+  async function fetchImports() {
     setLoadingImports(true)
-    fetchCSVImports().then((data) => {
-      setImports(data)
-      setLoadingImports(false)
-    })
+    const imports = await api
+      .get<CsvImportMetadata[]>('/user-imports/')
+      .then((response) => response.data)
+    setImports(imports)
+    setLoadingImports(false)
   }
 
-  function getTokens(csvImport: CSVImportReturn): string {
+  function getTokens(csvImport: CsvImportMetadata): string {
     let tokens = []
-    tokens.push(`Importação ${csvImport.id.toString().padStart(3, '0')}`)
+    tokens.push(
+      `Importação ${csvImport.import_name.toString().padStart(3, '0')}`
+    )
     tokens.push(csvImport.import_type === 'direct' ? 'Direta' : 'Indireta')
     tokens.push(csvImport.created_at)
     tokens.push(csvImport.balance_sum.toString())
@@ -57,7 +58,7 @@ export default function Home() {
     return tokens.join(' ').toLocaleLowerCase()
   }
 
-  function filterImports(imports: CSVImportReturn[]): CSVImportReturn[] {
+  function filterImports(imports: CsvImportMetadata[]): CsvImportMetadata[] {
     if (searchQuery === '') return imports
 
     return imports.filter((importData) =>
@@ -96,16 +97,13 @@ export default function Home() {
     }
 
     const importPayload = {
-      client_id: '007f0a12-3b15-4fe6-ab3f-e09ddb7386aa',
+      import_name: importNumber,
       import_type: importTypes === 'direct' ? 1 : 2,
       data: csvImportData.map(remadeCsvLine),
     }
 
-    await fetch(`${env.API_URL}/app/import-data/`, {
-      method: 'POST',
-      body: JSON.stringify(importPayload),
-      mode: 'cors',
-    })
+    await api
+      .post('/import-data/', importPayload)
       .then((response) => {
         response.status === 201 && toast.success('Importado com sucesso')
       })
@@ -208,18 +206,16 @@ export default function Home() {
         {imports.length > 0 && !loadingImports && (
           <div className='grid grid-cols-1 justify-center md:justify-start md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8'>
             {filterImports(imports)
-              .reverse()
+              .sort((a, b) => b.import_name - a.import_name)
               .map((importData) => (
-                <Card key={importData.id} importData={importData} />
+                <Card
+                  key={importData.import_name}
+                  csvImportMetadata={importData}
+                />
               ))}
           </div>
         )}
       </div>
-      <ImportTable
-        data={csvImportData as CSVLine[]}
-        show={showImportTableModal && csvImportData != undefined}
-        onClose={() => setShowImportTableModal(false)}
-      />
     </div>
   )
 }

@@ -17,7 +17,7 @@ import {
 } from '~/components/ui/chart'
 import { ImportData, filterImports, generateChartConfig } from './chart-data'
 
-export function MyChart({
+export function Chart({
   includedImports,
   chartData,
   importList,
@@ -39,7 +39,7 @@ export function MyChart({
     <Card>
       <CardHeader>
         <CardTitle>Gráfico de Importações</CardTitle>
-        <CardDescription>Janeiro - Junho 2024</CardDescription>
+        {/* <CardDescription>Janeiro - Junho 2024</CardDescription> */}
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

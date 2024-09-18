@@ -1,23 +1,24 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { CSVLine } from '~/types'
+import { CsvData } from '~/types'
 
-export const columns: ColumnDef<CSVLine>[] = [
+export const columns: ColumnDef<CsvData>[] = [
   {
-    accessorKey: '<DATE>',
+    accessorKey: 'date_time',
     header: 'Data',
+    cell: (row) => new Date(row.cell.getValue() as string).toLocaleDateString(),
   },
   {
-    accessorKey: '<BALANCE>',
+    accessorKey: 'balance',
     header: 'Balanço',
   },
   {
-    accessorKey: '<DEPOSIT LOAD>',
+    accessorKey: 'deposit',
     header: 'Depósito',
   },
   {
-    accessorKey: '<EQUITY>',
+    accessorKey: 'equity',
     header: 'Equidade',
   },
 ]

@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 import { Button } from '~/components/ui/button'
@@ -26,8 +27,14 @@ import {
   FormMessage,
 } from '~/components/ui/form'
 
+import { useAuth } from '~/context/auth-context'
+
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const router = useRouter()
+
+  const { login } = useAuth()
 
   const loginFormSchema = z.object({
     email: z
@@ -48,11 +55,15 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true)
 
-    console.log(values)
+    await login(values.email, values.password)
+      .then(() => {
+        router.push('/')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+    setIsLoading(false)
   }
 
   return (

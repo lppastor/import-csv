@@ -7,7 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
-import { CSVLine } from '~/types'
+import { CSVLine, CsvData } from '~/types'
 
 import {
   Table,
@@ -19,8 +19,8 @@ import {
 } from '../ui/table'
 
 interface DataTableProps<TValue> {
-  columns: ColumnDef<CSVLine, TValue>[]
-  data: CSVLine[]
+  columns: ColumnDef<CsvData, TValue>[]
+  data: CsvData[]
 }
 
 export function DataTable<TValue>({ columns, data }: DataTableProps<TValue>) {
