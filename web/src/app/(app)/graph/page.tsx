@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 
-import { env } from '~/env'
-import { fetchCSVImports } from '~/lib/fake-data'
+import { api } from '~/lib/api'
+import { CsvImportMetadata } from '~/types'
+
 import { Label } from '~/components/ui/label'
 
 import { MyChart } from './my-chart'
@@ -27,14 +28,17 @@ export default function GraphPage() {
   async function fetchChartData() {
     setLoading(true)
 
-    const importList = (await fetchCSVImports()).map((item) => item.id)
-    const chartData: ImportData[] = await fetch(
-      `${
-        env.API_URL
-      }/app/graph-data/?client_id=007f0a12-3b15-4fe6-ab3f-e09ddb7386aa&import_ids=${importList.join(
-        ','
-      )}`
-    ).then((res) => res.json())
+    const imports = await api
+      .get<CsvImportMetadata[]>('/user-imports/')
+      .then((response) => response.data)
+
+    const chartData = await api
+      .get<ImportData[]>(`/graph-data/`, {
+        params: {
+          import_name: imports.map((_import) => _import.import_name).join(','),
+        },
+      })
+      .then((response) => response.data)
 
     setChartData(chartData)
     setLoading(false)
