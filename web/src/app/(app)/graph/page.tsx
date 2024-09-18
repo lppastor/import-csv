@@ -8,7 +8,7 @@ import { CsvImportMetadata } from '~/types'
 
 import { Label } from '~/components/ui/label'
 
-import { MyChart } from './my-chart'
+import { Chart } from './chart
 import { ImportFilter } from './import-filter'
 import { ImportData } from './chart-data'
 
@@ -84,7 +84,7 @@ export default function GraphPage() {
       </header>
 
       <div>
-        <MyChart
+        <Chart
           includedImports={includedImports}
           chartData={chartData}
           importList={importList || []}
