@@ -32,15 +32,22 @@ export default function GraphPage() {
       .get<CsvImportMetadata[]>('/user-imports/')
       .then((response) => response.data)
 
-    const chartData = await api
-      .get<ImportData[]>(`/graph-data/`, {
-        params: {
-          import_name: imports.map((_import) => _import.import_name).join(','),
-        },
-      })
-      .then((response) => response.data)
+    if (imports.length === 0) {
+      setChartData([])
+    } else {
+      const chartData = await api
+        .get<ImportData[]>(`/graph-data/`, {
+          params: {
+            import_name: imports
+              .map((_import) => _import.import_name)
+              .join(','),
+          },
+        })
+        .then((response) => response.data)
 
-    setChartData(chartData)
+      setChartData(chartData)
+    }
+
     setLoading(false)
   }
 
