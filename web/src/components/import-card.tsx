@@ -1,6 +1,5 @@
 import { Dot, Eye, Trash2 } from 'lucide-react'
 
-import { CSVImportReturn } from '~/lib/fake-data'
 import { moneyFormat } from '~/lib/utils'
 
 import {
@@ -13,17 +12,26 @@ import {
 import { Date } from './date'
 import { Button } from './ui/button'
 import { notImplementedMessage } from '~/lib/not-implemented-message'
+import { CsvImportMetadata } from '~/types'
 
-export function Card({ importData }: { importData: CSVImportReturn }) {
-  const { id, import_type, created_at, balance_sum, deposit_sum, equity_sum } =
-    importData
+export function Card({ importData }: { importData: CsvImportMetadata }) {
+  const {
+    import_name,
+    import_type,
+    created_at,
+    balance_sum,
+    deposit_sum,
+    equity_sum,
+  } = importData
 
   const typeString: string = import_type === 'direct' ? 'Direta' : 'Indireta'
 
   return (
     <CardContainer className='shadow-lg'>
       <CardHeader>
-        <CardTitle>Importação {id.toString().padStart(3, '0')}</CardTitle>
+        <CardTitle>
+          Importação {import_name.toString().padStart(3, '0')}
+        </CardTitle>
         <CardDescription className='flex items-center gap-px'>
           <span>{typeString}</span>
           <Dot />

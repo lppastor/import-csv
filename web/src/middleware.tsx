@@ -1,10 +1,25 @@
 import { MiddlewareConfig, NextRequest, NextResponse } from 'next/server'
+import { api } from './lib/api'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
 
+  const loginRedirect = NextResponse.redirect(new URL('/login', request.url))
+
   if (!token) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    return loginRedirect
+  }
+
+  try {
+    const userResponse = await api.get('/client/me/', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    if (userResponse.status === 401) return loginRedirect
+  } catch (error) {
+    console.error(error)
+    return loginRedirect
   }
 
   return NextResponse.next()

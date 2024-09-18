@@ -55,8 +55,6 @@ export default function RegisterPage() {
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true)
 
-    console.log(values)
-
     setTimeout(() => {
       setIsLoading(false)
     }, 3000)

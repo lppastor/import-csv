@@ -56,7 +56,12 @@ export default function LoginPage() {
     setIsLoading(true)
 
     await login(values.email, values.password)
-    router.push('/')
+      .then(() => {
+        router.push('/')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
 
     setIsLoading(false)
   }

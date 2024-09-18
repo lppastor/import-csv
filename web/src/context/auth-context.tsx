@@ -32,25 +32,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const token = Cookies.get('token')
 
-    console.log('LOG | On AuthProvider useEffect | token: ', token)
-
     if (token) {
       api
-        .get('/client/me')
+        .get('/client/me/')
         .then((response) => {
           setUser(response.data)
         })
         .catch((err: AxiosError) => {
-          console.error(
-            'ERR | On AuthProvider useEffect | catch | token: ',
-            token
-          )
+          console.error(err.status)
           console.error(err.message)
-          console.log('<### REMOÇÃO DE COOKIES ###>')
-          // Cookies.remove('token')
+          Cookies.remove('token')
         })
     }
-  })
+  }, [])
 
   const login = async (email: string, password: string) => {
     const response = await api.post<{ access: string }>('/client/login/', {
@@ -60,17 +54,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { access } = response.data
 
-    console.log('LOG | On AuthProvider login | access: ', access)
-
     Cookies.set('token', access)
 
     const userResponse = await api.get<User>('/client/me/')
     setUser(userResponse.data)
-
-    console.log(
-      'LOG | On AuthProvider login | userResponse.data: ',
-      userResponse.data.email
-    )
   }
 
   const logout = () => {

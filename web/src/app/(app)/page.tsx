@@ -17,10 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
-import { CSVImportReturn, fetchCSVImports } from '~/lib/fake-data'
 
-import { CSVLine } from '~/types'
-import { env } from '~/env'
+import { CSVLine, CsvImportMetadata } from '~/types'
 import { api } from '~/lib/api'
 
 type ImportType = 'direct' | 'indirect'
@@ -35,20 +33,23 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false)
 
-  const [imports, setImports] = useState<CSVImportReturn[]>([])
+  const [imports, setImports] = useState<CsvImportMetadata[]>([])
   const [loadingImports, setLoadingImports] = useState(true)
 
-  function fetchImports() {
+  async function fetchImports() {
     setLoadingImports(true)
-    fetchCSVImports().then((data) => {
-      setImports(data)
-    })
+    const imports = await api
+      .get<CsvImportMetadata[]>('/user-imports/')
+      .then((response) => response.data)
+    setImports(imports)
     setLoadingImports(false)
   }
 
-  function getTokens(csvImport: CSVImportReturn): string {
+  function getTokens(csvImport: CsvImportMetadata): string {
     let tokens = []
-    tokens.push(`Importação ${csvImport.id.toString().padStart(3, '0')}`)
+    tokens.push(
+      `Importação ${csvImport.import_name.toString().padStart(3, '0')}`
+    )
     tokens.push(csvImport.import_type === 'direct' ? 'Direta' : 'Indireta')
     tokens.push(csvImport.created_at)
     tokens.push(csvImport.balance_sum.toString())
@@ -58,7 +59,7 @@ export default function Home() {
     return tokens.join(' ').toLocaleLowerCase()
   }
 
-  function filterImports(imports: CSVImportReturn[]): CSVImportReturn[] {
+  function filterImports(imports: CsvImportMetadata[]): CsvImportMetadata[] {
     if (searchQuery === '') return imports
 
     return imports.filter((importData) =>
@@ -208,7 +209,7 @@ export default function Home() {
             {filterImports(imports)
               .reverse()
               .map((importData) => (
-                <Card key={importData.id} importData={importData} />
+                <Card key={importData.import_name} importData={importData} />
               ))}
           </div>
         )}
