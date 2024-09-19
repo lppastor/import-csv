@@ -7,9 +7,9 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 import os
-import dotenv
+from dotenv import load_dotenv
 
-dotenv.load_dotenv()
+load_dotenv()
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -34,8 +34,9 @@ def google_login_callback(request):
     tokens = get_tokens_for_user(request.user)
     access_token = tokens['access']
     
-    # URL do frontend
-    frontend_url = 'http://127.0.0.1:3000/'
+    api_url= os.getenv('WEB_URL')
+    api_port= os.getenv('WEB_PORT')
+    frontend_url = f'{api_url}:{api_port}'
     redirect_url = f'{frontend_url}?token={access_token}'
     
     # Redireciona o usuário para o frontend com o token na URL
