@@ -118,6 +118,7 @@ export function Card({
         </CardContent>
       </CardContainer>
       <ImportTable
+        importTitle={import_name.toString().padStart(3, '0')}
         data={csvImportData as CsvData[]}
         show={showImportTableModal && csvImportData != undefined}
         onClose={() => setShowImportTableModal(false)}
