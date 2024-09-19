@@ -2,13 +2,19 @@ import { MiddlewareConfig, NextRequest, NextResponse } from 'next/server'
 import { api } from './lib/api'
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('token')?.value
+  const cookieToken = request.cookies.get('token')?.value
+
+  const url = new URL(request.url)
+  const queryParams = url.searchParams
+  const urlToken = queryParams.get('token') ?? undefined
 
   const loginRedirect = NextResponse.redirect(new URL('/login', request.url))
 
-  if (!token) {
+  if (!cookieToken && !urlToken) {
     return loginRedirect
   }
+
+  const token = cookieToken ?? urlToken
 
   try {
     const userResponse = await api.get('/client/me/', {
@@ -22,7 +28,13 @@ export async function middleware(request: NextRequest) {
     return loginRedirect
   }
 
-  return NextResponse.next()
+  const response = NextResponse.next()
+
+  if (urlToken) {
+    response.cookies.set('token', urlToken)
+  }
+
+  return response
 }
 
 export const config: MiddlewareConfig = {

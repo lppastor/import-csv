@@ -20,8 +20,10 @@ import { ImportTable } from './import-table'
 
 export function Card({
   csvImportMetadata,
+  handleDelete,
 }: {
   csvImportMetadata: CsvImportMetadata
+  handleDelete: (importName: number) => void
 }) {
   const [loadingImportData, setLoadingImportData] = useState(false)
   const [showImportTableModal, setShowImportTableModal] = useState(false)
@@ -89,7 +91,7 @@ export function Card({
           </div>
           <div className='flex items-center justify-end gap-3'>
             <Button
-              onClick={notImplementedMessage}
+              onClick={() => handleDelete(import_name)}
               variant='ghost'
               size='sm'
               className='flex gap-1 items-center hover:text-destructive hover:bg-destructive/10'

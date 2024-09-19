@@ -150,3 +150,46 @@ def get_csv_data(request):
     # Retornar os dados como JSON com status 200
     return JsonResponse(csv_list, safe=False, status=status.HTTP_200_OK)
 
+
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters= [
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description= "Token JWT no formato Bearer <token>",
+            type= openapi.TYPE_STRING
+        ),
+        openapi.Parameter(
+            'import_name', 
+            openapi.IN_QUERY, 
+            description= "Import name", 
+            type= openapi.TYPE_INTEGER
+        )
+    ]
+) 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])   
+def delete_csv_data(request):
+    client = request.user
+    import_name = request.GET.get('import_name')
+
+    if import_name is None:
+        return JsonResponse({"error": "Import name not provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        import_name = int(import_name)
+    except ValueError:
+        return JsonResponse({"error": "Invalid import name format."}, status=status.HTTP_400_BAD_REQUEST)
+
+    result = CsvDataRepository.delete_csv_import(import_name, client)
+    
+    if result is True:
+        return JsonResponse({"status": "Deleted import and related CSV data"}, status=status.HTTP_204_NO_CONTENT)
+    elif result is False:
+        return JsonResponse({"error": "CSV import not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+      
+

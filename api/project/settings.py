@@ -2,6 +2,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv 
 from datetime import timedelta
+from django.http import HttpResponseRedirect
+
 load_dotenv() # build .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -17,8 +19,8 @@ SECRET_KEY = os.getenv("DJANGO_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost']
+CORS_ORIGIN_ALLOW_ALL=True
 
 # Application definition
 
@@ -29,10 +31,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework_simplejwt',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'drf_yasg',
-    'app'
+    'app',
+    'allauth.socialaccount.providers.google'
+
 ]
 
 MIDDLEWARE = [
@@ -42,6 +50,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware'
 ]
@@ -51,7 +60,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -129,12 +138,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Adicione isso
     ),
-    
-        'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    
 }
 
 SIMPLE_JWT = {
@@ -146,4 +154,42 @@ SIMPLE_JWT = {
     
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+SITE_ID = 4 # Define o id do site na tabela djago_site do banco de dados 
+CORS_ORIGIN_ALLOW_ALL = True  
+
+# Cria automaticamente uma conta se o usuário fizer login com uma rede social e não tiver uma conta existente.
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
+# Define o campo de e-mail no modelo de usuário que será usado para login e associações.
+ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email'
+
+# Exige que google retorne o e-mail do usuário para completar o login ou cadastro.
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+
+# Desativa verificação de Email dentro da aplicação pois ja é verificado o email dentro do google
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# Usa o e-mail retornado pela rede social para autenticação de usuários.
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+
+
+# Define os scope retornado do google
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# Envia o cliente direto para url de autenticação do google
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Rota onde sera direcionado o cliente após login
+LOGIN_REDIRECT_URL = '/app/google_callback'

@@ -25,5 +25,6 @@ urlpatterns = [
     path( 'app/swagger/' , schema_view.with_ui( 'swagger' , cache_timeout= 0 ), name= 'schema-swagger-ui' ), 
     path( 'app/redoc/' , schema_view.with_ui( 'redoc' , cache_timeout= 0 ), name= 'schema-redoc' ), 
     path("app/", include("app.urls")),
+    path("accounts/", include('allauth.urls'), name='Autentication'),
     path('admin/', admin.site.urls)
 ]

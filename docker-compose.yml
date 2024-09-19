@@ -5,10 +5,10 @@ services:
     image: postgres:15
     env_file:
       - ./.env
-    ports:
-      - '${POSTGRES_PORT}:5432'
     volumes:
       - ./db_data:/var/lib/postgresql/data
+    network_mode: "host"
+
 
   api:
     image: python:3.10.15-alpine
@@ -16,14 +16,13 @@ services:
     working_dir: /app
     volumes:
       - ./api:/app
-    ports:
-      - '${NEXT_PUBLIC_API_PORT}:8000'
     depends_on:
       - db
     env_file:
       - ./.env
     entrypoint: /app/entrypoint.sh
     command: pipenv run manage runserver 0.0.0.0:8000
+    network_mode: "host"
 
   web:
     image: node:20-alpine
@@ -34,6 +33,6 @@ services:
       - ./.env
     volumes:
       - ./web:/app
-    ports:
-      - '${WEB_PORT}:3000' # out:in
     command: sh -c "npm install -g pnpm && pnpm install && pnpm build && pnpm start"
+    network_mode: "host"
+

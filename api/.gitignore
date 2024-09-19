@@ -1,5 +1,4 @@
 .env
 __pycache__
 .pnpm
-__init__.py
 staticfiles/ 

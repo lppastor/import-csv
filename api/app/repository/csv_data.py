@@ -85,3 +85,21 @@ class CsvDataRepository:
             formatted_response.append(formatted_entry)
 
         return formatted_response
+    
+
+    @classmethod
+    def delete_csv_import(cls, import_name, client):
+        try:
+            # Tenta buscar a importação pelo nome e cliente
+            csv_import = CsvImport.objects.get(import_name=import_name, client=client)
+            
+            # Deleta a importação e seus dados relacionados
+            csv_import.delete()
+            return True  # Retorna True para indicar que a deleção foi bem-sucedida
+        except CsvImport.DoesNotExist:
+            return False  # Retorna False se a importação não for encontrada
+        except Exception as e:
+            # Pode retornar uma mensagem de erro para logs ou depuração
+            return {"error": str(e)}
+    
+        

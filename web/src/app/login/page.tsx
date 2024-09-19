@@ -28,6 +28,7 @@ import {
 } from '~/components/ui/form'
 
 import { useAuth } from '~/context/auth-context'
+import { env } from '~/env'
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -128,13 +129,18 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-          <Button
-            type='button'
-            className='bg-[rgba(219,68,55,0.85)] hover:bg-[rgba(219,68,55,1)] text-white'
-            disabled={isLoading}
+          <a
+            href={`${env.API_URL}/accounts/google/login/`}
+            className='block w-full'
           >
-            Google
-          </Button>
+            <Button
+              type='button'
+              className='w-full bg-[rgba(219,68,55,0.85)] hover:bg-[rgba(219,68,55,1)] text-white'
+              disabled={isLoading}
+            >
+              Google
+            </Button>
+          </a>
         </CardContent>
         <CardFooter className='flex flex-col space-y-4'>
           <div className='text-sm text-center text-gray-500'>
