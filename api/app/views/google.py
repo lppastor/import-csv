@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny
 import os
 import dotenv
 
+dotenv.load_dotenv()
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -34,7 +35,7 @@ def google_login_callback(request):
     access_token = tokens['access']
     
     # URL do frontend
-    frontend_url = f'{os.getenv('WEB_URL')}:{os.getenv('WEB_PORT')}/'
+    frontend_url = 'http://127.0.0.1:3000/'
     redirect_url = f'{frontend_url}?token={access_token}'
     
     # Redireciona o usuário para o frontend com o token na URL
