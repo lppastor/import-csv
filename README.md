@@ -147,11 +147,11 @@ Para configurar a autenticação com Google OAuth no Django Admin:
 
 1. Acesse o [Google Cloud Console](https://console.cloud.google.com/).
 2. Crie um novo projeto ou selecione um projeto existente.
-3. Ative a **API gmail +** e a **indenty Toolkit API**.
+3. Ative a **API gmail +** e **indenty Toolkit API**.
 4. Vá em **Credenciais** > **Criar Credenciais** > **ID do Cliente OAuth 2.0**.
 5. Configure as URLs de redirecionamento:
    - **Autorização**: `http://localhost:8000/accounts/google/login/callback/` (ou sua URL de produção).
-6. Copie o **Client ID** e o **Client Secret**.
+6. Copie o **Client ID** e **Client Secret**.
 
 Agora no **Django Admin**:
 
