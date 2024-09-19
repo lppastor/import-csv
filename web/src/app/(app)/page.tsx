@@ -117,6 +117,21 @@ export default function Home() {
     fetchImports()
   }
 
+  async function handleDeleteImport(importName: number) {
+    await api
+      .get(`/delete/import/`, { params: { import_name: importName } })
+      .then((response) => {
+        response.status === 204 &&
+          toast.success('Importação deletada com sucesso')
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error('Erro ao deletar importação')
+      })
+
+    fetchImports()
+  }
+
   useEffect(() => {
     fetchImports()
   }, [])
@@ -210,6 +225,7 @@ export default function Home() {
               .map((importData) => (
                 <Card
                   key={importData.import_name}
+                  handleDelete={handleDeleteImport}
                   csvImportMetadata={importData}
                 />
               ))}
