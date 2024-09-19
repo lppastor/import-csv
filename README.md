@@ -1,135 +1,143 @@
-# Setup
 
-## Sem docker
+# Import CSV
 
-### API
+## Stack Tecnológica
 
-> Antes de rodar a API, suba um banco de dados PostgreSQL.
+## Front-end
+- Linguagem: [Typescript](https://www.typescriptlang.org/)
+- Framework: [React.js](https://react.dev/) | [Next.js](https://nextjs.org/)
+- Estilo: [TailwindCSS](https://tailwindcss.com/)
+- Sistema de Componentes: [Shadcn UI](https://ui.shadcn.com/)
+- Gerenciador de Pacotes: [pnpm](https://pnpm.io/pt/)
 
-Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta `api`, seguindo o exemplo do arquivo [`.env.example`](api/.env.example).
+## Back-end
+- Linguagem: [Python](https://www.python.org/)
+- Framework: [Django](https://www.djangoproject.com/)
+- Gerenciador de Pacotes: [Pipenv](https://pipenv.pypa.io/)
+- Banco de Dados: [PostgreSQL](https://www.postgresql.org/)
 
-Rode o comando `pipenv install` para instalar as dependências.
+# Escopo do Projeto
 
-Rode o comando `pipenv run migrate` para criar as tabelas no banco de dados.
+## Página de Login
+- **Funções**:
+  - Campo de input para Email e Senha
+  - Login com Google
+  - Esqueci minha senha
+  - Criar Usuário
 
-Rode o comando `pipenv run superuser` para criar um super usuário, baseado nas informações do arquivo `.env`.
+## Sistema
+- **Funções**:
+  - Importar CSV
+  - Menu tipo "Hambúrguer"
+  - Exibir as importações realizadas com a soma de uma coluna específica
+  - Opção de excluir CSV
+  - Gráfico interativo mostrando as importações selecionadas.
 
-Rode o comando `pipenv run start` para iniciar o servidor.
-
-Seu servidor vai estar disponível em http://localhost:8000.
-
-### Frontend Web
-
-> Antes de rodar o frontend, suba a API.
-
-Rode o comando `pnpm install` para instalar as dependências.
-
-Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta `web`, seguindo o exemplo do arquivo [`.env.example`](web/.env.example).
-
-Rode o comando `pnpm run dev` para iniciar o servidor de desenvolvimento.
-
-Seu servidor vai estar disponível em http://localhost:3000.
-
-Ou rode o comando `pnpm run build` para gerar a build de produção, e `pnpm run start` para iniciar o servidor de produção.
-
-## Com docker
-
-Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta raiz do repositório, seguindo o exemplo do arquivo [`.env.example`](.env.example).
-
-Rode o comando `docker-compose up` para iniciar o servidor.
+- **Especificações**:
+  - Eixo X do gráfico: Data da Transação
+  - Eixo Y do gráfico: Saldo
+  - Sistema desenvolvido para uso de um único usuário.
+  - Design responsivo para dispositivos móveis.
+  - Sem logos adicionais.
+  - O layout será baseado no design fornecido pelo cliente.
 
 
-# Project scope
 
-## Login page
-  - Functions
-    - input field for Email and Password
-    - Login and google
-    - Forgot password
-    - Create User
 
-  - specification
-    - Two-factor authentication : Not required 
-    - User Permission : Not required 
-    - Email Server: Not required.
-   
-## System
-  - Functions
-    - Import CSV
-    - Burguer menu
-    - Viewing the imports performed by displaying a column with the sum of column X
-    - Delete CSV option.
-    - Interactive graph showing selected imports.
-
-  - Specifications:
-    -  X-axis of the graph: Transaction Date.
-    -  Y-axis of the graph: Balance.
-    - System designed for use by a single user.
-    - Responsive design for mobile devices.
-    - No logos will be added.
-    - Design will follow the layout provided by the client.
-
-# Architecture
-
-## Database model
+# Modelo de Banco de Dados
 
 ```mermaid
 erDiagram
-    USER {
-        int user_id PK
-        datetime date_time
-        varchar(40) name
-        varchar(60) email
-        varbinary(255) password
-    }
-    
-    CSV_IMPORT {
-        int id PK
-        datetime date
-        int user_id_fk FK
-        int csv_id FK
-        int type_import
+    app_client {
+        int client_id PK
+        varchar(255) password
+        varchar(150) username
+        varchar(150) first_name
+        varchar(150) last_name
+        varchar(254) email
+        boolean is_superuser
+        boolean is_staff
+        boolean is_active
+        datetime date_joined
     }
 
-    CSV_DATA {
+    app_csvimport {
+        int import_id PK
+        varchar(255) import_name
+        datetime csv_import_date
+        int type_import
+        datetime created_at
+        int client_id_fk
+    }
+
+    app_csvdata {
         int csv_id PK
-        int csv_import_id_fk FK
-        datetime data
+        datetime date_time
         float balance
         float equity
         float deposit
+        int import_id_fk
     }
 
-    USER ||--o{ CSV_IMPORT : "is-from"
-    CSV_IMPORT ||--o{ CSV_DATA : "is-from"
+    app_client ||--o{ app_csvimport : "relacionado com"
+    app_csvimport ||--o{ app_csvdata : "relacionado com"
 ```
 
-# Stack
-
-## Front-end
-- Language: [Typescript](https://www.typescriptlang.org/)
-- Framework: [React.js](https://react.dev/) | [Next.js](https://nextjs.org/)
-- Style Lib: [TailwindCSS](https://tailwindcss.com/)
-- Component System: [Shadcn UI](https://ui.shadcn.com/)
-- Package Manager: [pnpm](https://pnpm.io/pt/) _*Alternative to `npm`_
-
-## Back-end
-- Language: [Python](https://www.python.org/)
-- Framework: [FastAPI](https://fastapi.tiangolo.com/)
-- Package Manager: [Pipenv](https://pipenv.pypa.io/)
-- Database: [PostegreSQL](https://www.postgresql.org/)
+---
 
 
-# Example:
 
-## Login page
-![https://github.com/user-attachments/assets/52aa0edb-5b14-44d6-8439-3aea447f31a6](https://i.imgur.com/hlRKRju.jpeg)
+# Processos de inicialização
 
-## System
-  ![WhatsApp Image 2024-08-09 at 11 04 57 (2)](https://i.imgur.com/UbjAOP7.jpeg)
-  
-## Graphics
-  ![WhatsApp Image 2024-08-09 at 11 04 57 (1)](https://i.imgur.com/miHvOkP.jpeg)
 
-## Database 
-![cb65a1ca-37a7-455f-bd64-b84e0d00c71a](https://i.imgur.com/GdZsWl2.jpeg)
+## Com Docker
+
+1. Defina as variáveis de ambiente em um arquivo `.env` na raiz do repositório, seguindo o exemplo do arquivo [`.env.example`](.env.example).
+## Exemplo de .env a ser seguido
+```.env
+POSTGRES_DB= nome do banco
+POSTGRES_USER= usuario do db
+POSTGRES_PASSWORD= senha do db
+POSTGRES_HOST=127.0.0.1  
+POSTGRES_PORT=5432
+
+DJANGO_KEY= sua secret key do django 
+DJANGO_SUPERUSER_PASSWORD= Senha de super usuario 
+DJANGO_SUPERUSER_EMAIL= Email
+DJANGO_SUPERUSER_USERNAME= Nome de usuario 
+
+NEXT_PUBLIC_API_URL=http://127.0.0.1
+NEXT_PUBLIC_API_PORT=8000
+
+WEB_URL=http://127.0.0.1
+WEB_PORT=3000
+```
+3. Execute o comando `docker-compose up` para subir o servidor.
+
+
+## Caso queira subir manualmente
+### API
+
+1. Antes de iniciar a API, suba um banco de dados PostgreSQL.
+2. Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta `api-server`, seguindo o exemplo do arquivo [`.env.example`](api/.env.example).
+3. Execute `pipenv install` para instalar as dependências.
+4. Execute `pipenv run migrate` para aplicar as migrações do banco de dados.
+5. Execute `pipenv run superuser` para criar um super usuário, com base nas informações do arquivo `.env`.
+6. Execute `pipenv run start` para iniciar o servidor.
+
+O servidor estará disponível em [http://localhost:8000](http://localhost:8000).
+
+### Frontend Web
+
+1. Antes de iniciar o frontend, certifique-se de que a API está rodando.
+2. Rode o comando `pnpm install` para instalar as dependências.
+3. Defina as variáveis de ambiente em um arquivo `.env` dentro da pasta `web`, seguindo o exemplo do arquivo [`.env.example`](web/.env.example).
+4. Rode o comando `pnpm run dev` para iniciar o servidor de desenvolvimento.
+5. O frontend estará disponível em [http://localhost:3000](http://localhost:3000).
+
+Para ambiente de produção, execute:
+- `pnpm run build` para gerar a build de produção
+- `pnpm run start` para iniciar o servidor de produção.
+
+
+
