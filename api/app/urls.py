@@ -15,5 +15,5 @@ urlpatterns = [
     path('client/login/', ClientLogin, name= "Login"),
     path('client/me/', get_client, name= "Get Client"),
     path('google_callback', google_login_callback, name='google callback'),
-    path('delete/import', delete_csv_data, name='import delete')
+    path('delete/import/', delete_csv_data, name='import delete')
 ]
