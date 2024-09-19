@@ -9,7 +9,7 @@ import { AuthProvider } from '~/context/auth-context'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'import-csv',
+  title: 'Import CSV',
   description: 'Ferramenta rápida e eficiente para importar arquivos CSV e visualizar dados',
   
 }
