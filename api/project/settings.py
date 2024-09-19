@@ -2,6 +2,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv 
 from datetime import timedelta
+from django.http import HttpResponseRedirect
+
 load_dotenv() # build .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -153,5 +155,42 @@ SIMPLE_JWT = {
     
 }
 
-SITE_ID = 1
-CORS_ORIGIN_ALLOW_ALL = True
+SITE_ID = 4 # Define o id do site na tabela djago_site do banco de dados 
+CORS_ORIGIN_ALLOW_ALL = True  
+
+# Cria automaticamente uma conta se o usuário fizer login com uma rede social e não tiver uma conta existente.
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
+# Define o campo de e-mail no modelo de usuário que será usado para login e associações.
+ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email'
+
+# Exige que google retorne o e-mail do usuário para completar o login ou cadastro.
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+
+# Desativa verificação de Email dentro da aplicação pois ja é verificado o email dentro do google
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# Usa o e-mail retornado pela rede social para autenticação de usuários.
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+
+
+# Define os scope retornado do google
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# Envia o cliente direto para url de autenticação do google
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Rota onde sera direcionado o cliente após login
+LOGIN_REDIRECT_URL = '/app/google_callback'
