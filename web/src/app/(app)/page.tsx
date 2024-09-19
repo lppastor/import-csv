@@ -25,7 +25,9 @@ type ImportType = 'direct' | 'indirect'
 
 export default function Home() {
   const [csvImportData, setCsvImportData] = useState<CSVLine[] | undefined>()
-  const [importTypes, setImportTypes] = useState<ImportType>()
+  const [importTypes, setImportTypes] = useState<ImportType | undefined>(
+    undefined
+  )
   const [importNumber, setImportNumber] = useState<number>()
 
   const [searchQuery, setSearchQuery] = useState('')
