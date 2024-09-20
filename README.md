@@ -126,6 +126,7 @@ WEB_PORT=3000
 6. Execute `pipenv run start` para iniciar o servidor.
 
 O servidor estará disponível em [http://localhost:8000](http://localhost:8000).
+### Documentação dos endpoints da api: http://127.0.0.1:8000/app/swagger
 
 ### Frontend Web
 
@@ -162,9 +163,7 @@ Agora no **Django Admin**: http://127.0.0.1:8000/admin
    - Associe o site correto ao aplicativo.
 3. Salve e teste a autenticação.
 
-## Documentação dos endpoits da API 
 
-### http://127.0.0.1:8000/app/swagger
 
 
 
