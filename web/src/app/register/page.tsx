@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -150,11 +150,25 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel htmlFor='password'>Senha</FormLabel>
                       <FormControl>
-                        <Input
-                          id='password'
-                          type={showPassword ? 'text' : 'password'}
-                          {...field}
-                        />
+                        <div className='border flex items-center gap-px rounded-lg'>
+                          <Input
+                            id='password'
+                            className='flex-1 border-none'
+                            type={showPassword ? 'text' : 'password'}
+                            {...field}
+                          />
+                          <Button
+                            variant='ghost'
+                            size='icon'
+                            onClick={() => setShowPassword((prev) => !prev)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className='opacity-50' />
+                            ) : (
+                              <Eye className='opacity-50' />
+                            )}
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage className='text-sm' />
                     </FormItem>
